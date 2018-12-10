@@ -1,7 +1,7 @@
 import './common/css/reset.css'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import {RoughEase, Power2} from "gsap";
+import {TweenMax, RoughEase, Power2} from "gsap";
 
 var scene, camera, renderer, orbit, light;
 
@@ -39,7 +39,7 @@ orbit.enablePan = false;
 orbit.rotateSpeed = 0.3;
 orbit.zoomSpeed = 0.3;
 
-orbit.autoRotate = false;
+orbit.autoRotate = true;
 orbit.autoRotateSpeed = 0.6;
 
 //orbit.minPolarAngle = Math.PI * 0.3;
@@ -49,7 +49,7 @@ orbit.maxPolarAngle = Math.PI * 0.45;
 //orbit.maxAzimuthAngle = Math.PI * 0.2; // radians
 
 orbit.minDistance = 40;
-orbit.maxDistance = 300;
+orbit.maxDistance = 500;
 
 orbit.target.set(0, 5, 0);
 orbit.update();
@@ -73,293 +73,11 @@ function makeSprite() {
     return sprite;
 }
 
-
-/*////////////////////////////////////////*/
-
-
-var ambientLight = new THREE.AmbientLight(0x222222);
-scene.add(ambientLight);
-
-
-let hemiLight = new THREE.HemisphereLight(0xEBF7FD, 0xEBF7FD, 0.2);
-//hemiLight.color.setRGB(0.75,0.8,0.95);
-hemiLight.position.set(0, 100, 0);
-scene.add(hemiLight);
-
-/*////////////////////////////////////////*/
-
-function noiseMap(size, intensity) {
-    var canvas = document.createElement('canvas'),
-        ctx = canvas.getContext('2d'),
-        width = canvas.width = size || 512,
-        height = canvas.height = size || 512;
-
-    intensity = intensity || 120;
-
-    var imageData = ctx.getImageData(0, 0, width, height),
-        pixels = imageData.data,
-        n = pixels.length,
-        i = 0;
-
-    while (i < n) {
-        pixels[i++] = pixels[i++] = pixels[i++] = Math.sin(i * i * i + (i / n) * Math.PI) * intensity;
-        pixels[i++] = 255;
-    }
-    ctx.putImageData(imageData, 0, 0);
-
-    let sprite = new THREE.Texture(canvas);
-    sprite.needsUpdate = true;
-
-    return sprite;
-}
-
-let noise = noiseMap(512, 60);
-
-
-/*////////////////////////////////////////*/
-
-
-//var gui = new dat.GUI();
-//let l = 0;
-function makeLight(color) {
-    let light = new THREE.PointLight(color || 0xFFFFFF, 1, 0);
-
-    light.castShadow = true;
-    light.shadow.mapSize.width = 512;
-    light.shadow.mapSize.height = 512;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 120;
-    light.shadow.bias = 0.9;
-    light.shadow.radius = 5;
-
-    light.power = 9;
-
-    // var sphereSize = 20;
-    // var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
-    // light.add( pointLightHelper );
-
-    return light;
-}
-
-function Flame(color) {
-
-    THREE.Group.apply(this, arguments);
-
-    this.light = makeLight(color);
-
-    this.light.position.y += 7;
-    this.add(this.light);
-
-    let geometry = new THREE.CylinderGeometry(0, 8, 8, 3); //new THREE.BoxGeometry(10,10,10);
-    let material = new THREE.MeshPhongMaterial({
-        color: color,
-        //specular: 0x009900,
-        shininess: 550,
-        emissive: color,
-        transparent: true,
-        opacity: 0.4,
-        flatShading: THREE.FlatShading
-    });
-
-    let flame = new THREE.Mesh(geometry, material);
-
-    this.flame = flame;
-
-    this.add(flame);
-
-    this.scale.y = 2;
-
-    this.flicker(this.flicker);
-
-}
-
-Flame.prototype = Object.assign(THREE.Group.prototype, {
-    constructor: Flame,
-
-    flicker(onComplete) {
-
-        let speed = 0.1 + Math.random() * 0.1;
-        let ease = RoughEase.ease.config({
-            template: Power2.easeInOut,
-            strength: 0.3,
-            points: 10,
-            taper: "none",
-            randomize: true,
-            clamp: true
-        });
-
-        var tl = new TimelineMax({
-            onComplete: function () {
-                this.reverse()
-            },
-            onReverseComplete: onComplete,
-            onReverseCompleteScope: this,
-            onReverseCompleteParams: [onComplete]
-        });
-
-
-        let scale = 2 + Math.random() * 2
-        tl.to(this.scale, speed, {
-            y: scale,
-            ease: ease,
-        });
-        tl.to(this.position, speed, {
-            y: '+=' + (scale * 1.5),
-            ease: ease,
-        });
-
-        // tl.to(this.rotation, speed, {
-        //   x: (Math.PI / 4) * (Math.random() - 0.5),
-        //   //y: (Math.PI / 6) * (Math.random() - 0.5),
-        //   //z: (Math.PI / 5) * (Math.random() - 0.5),
-        //   ease: ease,
-        // });
-
-        tl.to(this.light, speed, {
-            power: 8 + 9 * Math.random(),
-            ease: ease,
-        });
-    }
-});
-
-// fire = new Fire();
-// fire.position.y = 10;
-
-let colors = [0xdb2902, 0xfb4402];
-const TWOPI = Math.PI * 2;
-const HALFPI = Math.PI / 2;
-let flames = Array(5).fill(null);
-flames.forEach((flame, i) => {
-
-    flame = new Flame(colors[Math.floor(colors.length * Math.random())]);
-
-    flame.position.z = 9 * Math.cos((i / flames.length) * TWOPI) + Math.sin(Math.random());
-    flame.position.x = 9 * Math.sin((i / flames.length) * TWOPI) + Math.sin(Math.random());
-    flame.position.y = 14;
-    scene.add(flame);
-
-});
-
-let fire;
-
-
-/*////////////////////////////////////////*/
-
-let fireParticles;
-
-function makeFireParticles() {
-
-    let pointGeometry = new THREE.Geometry();
-
-    for (let i = 0; i < 20; i++) {
-        var vertex = new THREE.Vector3();
-        vertex.x = Math.random() * 16 - 8;
-        vertex.y = Math.random() * 60;
-        vertex.z = Math.random() * 16 - 8;
-        vertex._maxHeight = 50 + Math.random() * 10;
-        vertex._speed = 0.1 + Math.random() * 0.1;
-        pointGeometry.vertices.push(vertex);
-    }
-
-    pointGeometry.verticesNeedUpdate = true;
-    pointGeometry.normalsNeedUpdate = true;
-    pointGeometry.computeFaceNormals();
-
-    let pointMaterial = new THREE.PointsMaterial({
-        //size: 16,
-        color: 0xFF0000,
-        map: makeSprite(),
-        blending: THREE.AdditiveBlending,
-        depthTest: true,
-        transparent: true,
-        opacity: 0.4,
-    });
-
-    let particles = new THREE.Points(pointGeometry, pointMaterial);
-    scene.add(particles);
-
-    let count = 0;
-    return function () {
-        count += 0.01;
-        particles.geometry.vertices.forEach((vertex, i) => {
-            vertex.x += Math.sin(count * 1.5 + i) * 0.1;
-            vertex.z += Math.cos(count * 1.5 + i) * 0.1;
-            vertex.y += vertex._speed;
-            if (vertex.y > vertex._maxHeight) {
-                vertex.y = 0;
-            }
-        });
-        particles.geometry.verticesNeedUpdate = true;
-    }
-}
-
-fireParticles = makeFireParticles();
-
-
-/*////////////////////////////////////////*/
-// LOG
-
-let logMaterial = new THREE.MeshPhongMaterial({
-    color: 0x5C2626,
-    shininess: 10,
-    flatShading: THREE.FlatShading
-});
-
-let logEndMaterial = new THREE.MeshPhongMaterial({
-    color: 0xF9F5CE,
-    shininess: 10,
-    flatShading: THREE.FlatShading
-});
-
-function Log() {
-
-    let geometry = new THREE.BoxGeometry(10, 10, 40);
-
-    THREE.Mesh.call(this, geometry, logMaterial);
-
-
-    let endGeometry = new THREE.BoxGeometry(7, 7, 0.5);
-    let end = new THREE.Mesh(endGeometry, logEndMaterial);
-    end.position.z = 20;
-    this.add(end);
-
-    let otherEnd = new THREE.Mesh(endGeometry, logEndMaterial);
-    otherEnd.position.z = -20;
-    this.add(otherEnd);
-    //let otherEnd = end.clone();
-
-//   otherEnd.position.z = -20;
-
-//   this.add(end, otherEnd);
-
-    this.castShadow = true;
-    this.receiveShadow = true;
-}
-
-Log.prototype = Object.assign(THREE.Mesh.prototype, {
-    constructor: Log
-});
-
-let logs = Array(3).fill(null);
-logs.forEach((log, i) => {
-    log = new Log();
-    //log.position.z = 15 * Math.cos((i / logs.length) * TWOPI);
-    log.position.x = 15 * Math.sin((i / logs.length) * TWOPI) + Math.sin(Math.random());
-    log.position.y = 5;
-    log.position.z = 1;
-
-    log.rotation.z = HALFPI / 2;// * Math.sin(i+1);
-    //log.rotation.y = HALFPI / 2 * Math.cos((i / logs.length) * TWOPI);
-    scene.add(log);
-});
-
-/*////////////////////////////////////////*/
-
-
 /*////////////////////////////////////////*/
 
 // LION
 function Lion() {
+    this.idelingPos = {x: 0, y: 0};
     this.windTime = 0;
     this.bodyInitPositions = [];
     this.maneParts = [];
@@ -834,6 +552,41 @@ Lion.prototype.cool = function (xTarget, yTarget) {
     this.body.geometry.verticesNeedUpdate = true;
 }
 
+Lion.prototype.idle = function () {
+    TweenMax.killTweensOf(this.head.rotation);
+
+    if (this.isIdeling || Math.random() < .90) return;
+    this.isIdeling = true;
+    var tx = -600 + Math.random() * 1000;
+    var ty = -100 + Math.random() * 500;
+    var tz = 0;
+    var speed = 1 + Math.random() * 1;
+    TweenMax.to(this.idelingPos, speed, {
+        x: tx, y: ty, ease: Power4.easeInOut, onUpdate: () => {
+            this.look(this.idelingPos.x, this.idelingPos.y);
+        }, onComplete: () => {
+            this.isIdeling = false;
+        }
+    })
+}
+
+Lion.prototype.acitve = function () {
+    TweenMax.killTweensOf(this.head.rotation);
+
+    if (this.isActive || Math.random() < .90) return;
+    this.isActive = true;
+    var tx = -500 + Math.random() * 500;
+    var ty = -100 + Math.random() * 500;
+    var tz = 0;
+    var speed = 1 + Math.random() * 0.8;
+    TweenMax.to(this.idelingPos, speed, {
+        x: tx, y: ty, ease: Power4.easeInOut, onUpdate: () => {
+            this.cool(this.idelingPos.x, this.idelingPos.y);
+        }, onComplete: () => {
+            this.isActive = false;
+        }
+    })
+}
 
 function rule3(v, vmin, vmax, tmin, tmax) {
     var nv = Math.max(Math.min(v, vmax), vmin);
@@ -848,12 +601,293 @@ function rule3(v, vmin, vmax, tmin, tmax) {
 let lion = new Lion();
 lion.threegroup.position.x = -50;
 lion.threegroup.position.z = 50;
-lion.threegroup.position.y = 15;
+lion.threegroup.position.y = 20;
 lion.threegroup.scale.set(.2, .2, .2)
-lion.threegroup.rotation.y = Math.PI/4;
+lion.threegroup.rotation.y = 2.15 * Math.PI / 3;
 scene.add(lion.threegroup);
 /*////////////////////////////////////////*/
 
+
+/*////////////////////////////////////////*/
+
+
+var ambientLight = new THREE.AmbientLight(0x222222);
+scene.add(ambientLight);
+
+
+let hemiLight = new THREE.HemisphereLight(0xEBF7FD, 0xEBF7FD, 0.2);
+//hemiLight.color.setRGB(0.75,0.8,0.95);
+hemiLight.position.set(0, 100, 0);
+scene.add(hemiLight);
+
+/*////////////////////////////////////////*/
+
+function noiseMap(size, intensity) {
+    var canvas = document.createElement('canvas'),
+        ctx = canvas.getContext('2d'),
+        width = canvas.width = size || 512,
+        height = canvas.height = size || 512;
+
+    intensity = intensity || 120;
+
+    var imageData = ctx.getImageData(0, 0, width, height),
+        pixels = imageData.data,
+        n = pixels.length,
+        i = 0;
+
+    while (i < n) {
+        pixels[i++] = pixels[i++] = pixels[i++] = Math.sin(i * i * i + (i / n) * Math.PI) * intensity;
+        pixels[i++] = 255;
+    }
+    ctx.putImageData(imageData, 0, 0);
+
+    let sprite = new THREE.Texture(canvas);
+    sprite.needsUpdate = true;
+
+    return sprite;
+}
+
+let noise = noiseMap(512, 60);
+
+
+/*////////////////////////////////////////*/
+
+
+//var gui = new dat.GUI();
+//let l = 0;
+function makeLight(color) {
+    let light = new THREE.PointLight(color || 0xFFFFFF, 1, 0);
+
+    light.castShadow = true;
+    light.shadow.mapSize.width = 512;
+    light.shadow.mapSize.height = 512;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 120;
+    light.shadow.bias = 0.9;
+    light.shadow.radius = 5;
+
+    light.power = 9;
+
+    // var sphereSize = 20;
+    // var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
+    // light.add( pointLightHelper );
+
+    return light;
+}
+
+function Flame(color) {
+
+    THREE.Group.apply(this, arguments);
+
+    this.light = makeLight(color);
+
+    this.light.position.y += 7;
+    this.add(this.light);
+
+    let geometry = new THREE.CylinderGeometry(0, 8, 8, 3); //new THREE.BoxGeometry(10,10,10);
+    let material = new THREE.MeshPhongMaterial({
+        color: color,
+        //specular: 0x009900,
+        shininess: 550,
+        emissive: color,
+        transparent: true,
+        opacity: 0.4,
+        flatShading: THREE.FlatShading
+    });
+
+    let flame = new THREE.Mesh(geometry, material);
+
+    this.flame = flame;
+
+    this.add(flame);
+
+    this.scale.y = 2;
+
+    this.flicker(this.flicker);
+
+}
+
+Flame.prototype = Object.assign(THREE.Group.prototype, {
+    constructor: Flame,
+
+    flicker(onComplete) {
+
+        let speed = 0.1 + Math.random() * 0.1;
+        let ease = RoughEase.ease.config({
+            template: Power2.easeInOut,
+            strength: 0.3,
+            points: 10,
+            taper: "none",
+            randomize: true,
+            clamp: true
+        });
+
+        var tl = new TimelineMax({
+            onComplete: function () {
+                this.reverse()
+            },
+            onReverseComplete: onComplete,
+            onReverseCompleteScope: this,
+            onReverseCompleteParams: [onComplete]
+        });
+
+
+        let scale = 2 + Math.random() * 2
+        tl.to(this.scale, speed, {
+            y: scale,
+            ease: ease,
+        });
+        tl.to(this.position, speed, {
+            y: '+=' + (scale * 1.5),
+            ease: ease,
+        });
+
+        // tl.to(this.rotation, speed, {
+        //   x: (Math.PI / 4) * (Math.random() - 0.5),
+        //   //y: (Math.PI / 6) * (Math.random() - 0.5),
+        //   //z: (Math.PI / 5) * (Math.random() - 0.5),
+        //   ease: ease,
+        // });
+
+        tl.to(this.light, speed, {
+            power: 8 + 9 * Math.random(),
+            ease: ease,
+        });
+    }
+});
+
+// fire = new Fire();
+// fire.position.y = 10;
+
+let colors = [0xdb2902, 0xfb4402];
+const TWOPI = Math.PI * 2;
+const HALFPI = Math.PI / 2;
+let flames = Array(5).fill(null);
+flames.forEach((flame, i) => {
+
+    flame = new Flame(colors[Math.floor(colors.length * Math.random())]);
+
+    flame.position.z = 9 * Math.cos((i / flames.length) * TWOPI) + Math.sin(Math.random());
+    flame.position.x = 9 * Math.sin((i / flames.length) * TWOPI) + Math.sin(Math.random());
+    flame.position.y = 14;
+    scene.add(flame);
+
+});
+
+let fire;
+
+
+/*////////////////////////////////////////*/
+
+let fireParticles;
+
+function makeFireParticles() {
+
+    let pointGeometry = new THREE.Geometry();
+
+    for (let i = 0; i < 20; i++) {
+        var vertex = new THREE.Vector3();
+        vertex.x = Math.random() * 16 - 8;
+        vertex.y = Math.random() * 60;
+        vertex.z = Math.random() * 16 - 8;
+        vertex._maxHeight = 50 + Math.random() * 10;
+        vertex._speed = 0.1 + Math.random() * 0.1;
+        pointGeometry.vertices.push(vertex);
+    }
+
+    pointGeometry.verticesNeedUpdate = true;
+    pointGeometry.normalsNeedUpdate = true;
+    pointGeometry.computeFaceNormals();
+
+    let pointMaterial = new THREE.PointsMaterial({
+        //size: 16,
+        color: 0xFF0000,
+        map: makeSprite(),
+        blending: THREE.AdditiveBlending,
+        depthTest: true,
+        transparent: true,
+        opacity: 0.4,
+    });
+
+    let particles = new THREE.Points(pointGeometry, pointMaterial);
+    scene.add(particles);
+
+    let count = 0;
+    return function () {
+        count += 0.01;
+        particles.geometry.vertices.forEach((vertex, i) => {
+            vertex.x += Math.sin(count * 1.5 + i) * 0.1;
+            vertex.z += Math.cos(count * 1.5 + i) * 0.1;
+            vertex.y += vertex._speed;
+            if (vertex.y > vertex._maxHeight) {
+                vertex.y = 0;
+            }
+        });
+        particles.geometry.verticesNeedUpdate = true;
+    }
+}
+
+fireParticles = makeFireParticles();
+
+
+/*////////////////////////////////////////*/
+// LOG
+
+let logMaterial = new THREE.MeshPhongMaterial({
+    color: 0x5C2626,
+    shininess: 10,
+    flatShading: THREE.FlatShading
+});
+
+let logEndMaterial = new THREE.MeshPhongMaterial({
+    color: 0xF9F5CE,
+    shininess: 10,
+    flatShading: THREE.FlatShading
+});
+
+function Log() {
+
+    let geometry = new THREE.BoxGeometry(10, 10, 40);
+
+    THREE.Mesh.call(this, geometry, logMaterial);
+
+
+    let endGeometry = new THREE.BoxGeometry(7, 7, 0.5);
+    let end = new THREE.Mesh(endGeometry, logEndMaterial);
+    end.position.z = 20;
+    this.add(end);
+
+    let otherEnd = new THREE.Mesh(endGeometry, logEndMaterial);
+    otherEnd.position.z = -20;
+    this.add(otherEnd);
+    //let otherEnd = end.clone();
+
+//   otherEnd.position.z = -20;
+
+//   this.add(end, otherEnd);
+
+    this.castShadow = true;
+    this.receiveShadow = true;
+}
+
+Log.prototype = Object.assign(THREE.Mesh.prototype, {
+    constructor: Log
+});
+
+let logs = Array(3).fill(null);
+logs.forEach((log, i) => {
+    log = new Log();
+    //log.position.z = 15 * Math.cos((i / logs.length) * TWOPI);
+    log.position.x = 15 * Math.sin((i / logs.length) * TWOPI) + Math.sin(Math.random());
+    log.position.y = 5;
+    log.position.z = 1;
+
+    log.rotation.z = HALFPI / 2;// * Math.sin(i+1);
+    //log.rotation.y = HALFPI / 2 * Math.cos((i / logs.length) * TWOPI);
+    scene.add(log);
+});
+
+/*////////////////////////////////////////*/
 
 // OUTSIDE GROUND
 
@@ -1044,6 +1078,7 @@ function render() {
         fire.flicker(count);
     }
 
+    lion.idle();
     // scene.traverse( (child) => {
     //   if ( child.material ) { child.material.needsUpdate = true; }
     // });

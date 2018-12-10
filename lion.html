@@ -400,11 +400,11 @@
         this.mustache4 = this.mustache1.clone();
         this.mustache4.rotation.z = Math.PI;
         this.mustache4.position.x = -30;
-        this.mustache5 = new THREE.Mesh(mustacheGeom, this.blackMat);
+       // this.mustache5 = new THREE.Mesh(mustacheGeom, this.blackMat);
         this.mustache5 = this.mustache2.clone();
         this.mustache5.rotation.z = Math.PI;
         this.mustache5.position.x = -35;
-        this.mustache6 = new THREE.Mesh(mustacheGeom, this.blackMat);
+        //this.mustache6 = new THREE.Mesh(mustacheGeom, this.blackMat);
         this.mustache6 = this.mustache3.clone();
         this.mustache6.rotation.z = Math.PI;
         this.mustache6.position.x = -30;
@@ -526,6 +526,8 @@
         this.head.add(this.mustache4);
         this.head.add(this.mustache5);
         this.head.add(this.mustache6);
+        console.log(this.mustache1,'this.mustache1')
+        console.log(this.mustache2,'this.mustache2')
 
 
         this.head.position.y = 60;
