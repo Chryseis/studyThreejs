@@ -35,7 +35,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "gsap": "^2.0.2",
-    "three": "^0.99.0",
+    "three": "^0.86.0",
     "three-orbitcontrols": "^2.99.1"
   },
   "author": "allen",
