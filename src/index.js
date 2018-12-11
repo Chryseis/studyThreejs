@@ -4,6 +4,7 @@ import OrbitControls from 'three-orbitcontrols'
 import {TweenMax, RoughEase, Power2} from "gsap";
 import Lion from './components/Lion'
 import Rabbit from './components/Rabbit'
+import Dragon from './components/Dragon'
 
 var scene, camera, renderer, orbit, light;
 
@@ -45,7 +46,7 @@ orbit.autoRotate = false;
 orbit.autoRotateSpeed = 0.6;
 
 //orbit.minPolarAngle = Math.PI * 0.3;
-orbit.maxPolarAngle = Math.PI * 0.45;
+orbit.maxPolarAngle = Math.PI * 0.5;
 
 //orbit.minAzimuthAngle = -Math.PI * 0.2; // radians
 //orbit.maxAzimuthAngle = Math.PI * 0.2; // radians
@@ -78,9 +79,7 @@ function makeSprite() {
 /*////////////////////////////////////////*/
 //Lion
 let lion = new Lion();
-lion.position.x = -50;
-lion.position.z = 50;
-lion.position.y = 20;
+lion.position.set(-50, 20, 50)
 lion.scale.set(.2, .2, .2)
 lion.rotation.y = 2.15 * Math.PI / 3;
 scene.add(lion);
@@ -90,15 +89,20 @@ scene.add(lion);
 /*////////////////////////////////////////*/
 //Rabbit
 let rabbit = new Rabbit();
-rabbit.position.x = 60;
-rabbit.position.z = -20;
-rabbit.position.y = -5;
-rabbit.scale.set(1.2, 1.2, 1.2)
+rabbit.position.set(60, -5, -20);
 rabbit.rotation.y = 5 * Math.PI / 3;
+rabbit.scale.set(1.2, 1.2, 1.2)
 scene.add(rabbit);
 /*////////////////////////////////////////*/
 
-
+/*////////////////////////////////////////*/
+//Dragon
+let dragon = new Dragon();
+dragon.position.set(-40, 10, -75);
+dragon.scale.set(.35, .35, .35)
+dragon.rotation.y = 0.4 * Math.PI / 3;
+scene.add(dragon);
+/*////////////////////////////////////////*/
 
 /*////////////////////////////////////////*/
 
@@ -406,7 +410,7 @@ function snowyGround() {
         bumpScale: 0.025,
         //emissive: 0xEBF7FD,
         //emissiveIntensity: 0.05,
-        flatShading: THREE.SmoothShading
+        //flatShading: THREE.SmoothShading
     });
 
     let plane = new THREE.Mesh(geometry, material);
@@ -503,11 +507,11 @@ function pointsParticles() {
 
     let pointGeometry = new THREE.Geometry();
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 1000; i++) {
         var vertex = new THREE.Vector3();
-        vertex.x = Math.random() * 200 - 100;
-        vertex.y = Math.random() * 100;
-        vertex.z = Math.random() * 200 - 100;
+        vertex.x = Math.random() * 300 - 100;
+        vertex.y = Math.random() * 200;
+        vertex.z = Math.random() * 300 - 100;
         pointGeometry.vertices.push(vertex);
     }
 
@@ -573,6 +577,8 @@ function render() {
     lion.idle();
 
     rabbit.idle();
+
+    dragon.idle();
     // scene.traverse( (child) => {
     //   if ( child.material ) { child.material.needsUpdate = true; }
     // });
