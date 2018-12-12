@@ -1,10 +1,12 @@
 import './common/css/reset.css'
+import './common/css/common.less'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import {TweenMax, RoughEase, Power2} from "gsap";
 import Lion from './components/Lion'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
+import WordsParticles from './components/WordsParticles'
 
 var scene, camera, renderer, orbit, light;
 
@@ -13,7 +15,7 @@ scene.fog = new THREE.Fog(0x242426, 20, 400);
 
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
 camera.position.z = 100;
-camera.position.y = 50;
+camera.position.y = 100;
 camera.position.x = 30;
 camera.updateProjectionMatrix();
 
@@ -42,7 +44,7 @@ orbit.enablePan = false;
 orbit.rotateSpeed = 0.3;
 orbit.zoomSpeed = 0.3;
 
-orbit.autoRotate = false;
+orbit.autoRotate = true;
 orbit.autoRotateSpeed = 0.6;
 
 //orbit.minPolarAngle = Math.PI * 0.3;
@@ -57,6 +59,11 @@ orbit.maxDistance = 500;
 orbit.target.set(0, 5, 0);
 orbit.update();
 
+let words = new WordsParticles(renderer)
+words.init(function () {
+    words.updateText(0, 0x000000)
+    words.updateRender();
+});
 
 function makeSprite() {
 
@@ -160,9 +167,9 @@ function makeLight(color) {
     light.shadow.camera.near = 0.1;
     light.shadow.camera.far = 120;
     light.shadow.bias = 0.9;
-    light.shadow.radius = 5;
+    light.shadow.radius = 10;
 
-    light.power = 9;
+    light.power = 15;
 
     // var sphereSize = 20;
     // var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
@@ -507,17 +514,17 @@ function pointsParticles() {
 
     let pointGeometry = new THREE.Geometry();
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10000; i++) {
         var vertex = new THREE.Vector3();
-        vertex.x = Math.random() * 300 - 100;
-        vertex.y = Math.random() * 200;
-        vertex.z = Math.random() * 300 - 100;
+        vertex.x = Math.random() * 500 - 100;
+        vertex.y = Math.random() * 500;
+        vertex.z = Math.random() * 800 - 100;
         pointGeometry.vertices.push(vertex);
     }
 
-    pointGeometry.verticesNeedUpdate = true;
-    pointGeometry.normalsNeedUpdate = true;
-    pointGeometry.computeFaceNormals();
+    // pointGeometry.verticesNeedUpdate = true;
+    // pointGeometry.normalsNeedUpdate = true;
+    // pointGeometry.computeFaceNormals();
 
     let pointMaterial = new THREE.PointsMaterial({
         //size: 16,
@@ -525,12 +532,11 @@ function pointsParticles() {
         blending: THREE.AdditiveBlending,
         depthTest: true,
         transparent: true,
-        opacity: 0.2,
+        opacity: 0.3,
     });
 
     let particles = new THREE.Points(pointGeometry, pointMaterial);
     scene.add(particles);
-    console.log(particles.geometry);
 
     let count = 0;
     return function () {
@@ -538,9 +544,9 @@ function pointsParticles() {
         particles.geometry.vertices.forEach((vertex, i) => {
             vertex.x += Math.sin(count + i) * 0.05;
             vertex.z += Math.cos(count + i) * 0.05;
-            vertex.y -= 0.2;
+            vertex.y -= 0.5;
             if (vertex.y < 0) {
-                vertex.y = 100;
+                vertex.y = 500;
             }
         });
         particles.geometry.verticesNeedUpdate = true;

@@ -36,7 +36,8 @@
     "express": "^4.16.4",
     "gsap": "^2.0.2",
     "three": "^0.86.0",
-    "three-orbitcontrols": "^2.99.1"
+    "three-orbitcontrols": "^2.99.1",
+    "webfontloader": "^1.6.28"
   },
   "author": "allen",
   "license": "ISC"

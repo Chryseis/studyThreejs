@@ -7,6 +7,8 @@ const conf = require('./dev.conf')
 const app = express();
 const compiler = webpack(conf);
 
+app.use(express.static('static'))
+
 app.use(devMiddleware(compiler, {
     publicPath: '/'
 }))
