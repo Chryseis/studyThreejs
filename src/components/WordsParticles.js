@@ -21,7 +21,7 @@ class WordsParticles {
         this.bgrFront = this.bgr2;
         this.renderer = renderer;
         this.index = this.oldIndex = 0;
-        this.color = this.oldColor = 0x000000;
+        this.color = this.oldColor = 0xfffffff;
         this.timer = 0;
         this.isVisible = false;
         wordsInstance = this;
@@ -71,9 +71,8 @@ class WordsParticles {
         this.particlesColumns = 2048;
         this.particlesRows = 190;
         this.particlesCount = this.particlesColumns * this.particlesRows;
-         //this.titleCanvas = document.getElementById("mycanvas");
+        //this.titleCanvas = document.getElementById("mycanvas");
         this.titleCanvas = document.createElement('canvas');
-        document.body.appendChild(this.titleCanvas)
 
         this.ctx = this.titleCanvas.getContext("2d");
         this.ctx.scale(2, 2);
@@ -81,7 +80,7 @@ class WordsParticles {
         this.titleCanvas.height = this.particlesColumns;
 
         this.ctx.textAlign = "center";
-        this.ctx.font = "240px 'Yeseva'";
+        this.ctx.font = "1000px 'Yeseva'";
         var posY = 0;
 
         for (var i = 0, l = this.texts.length; i < l; i++) {
@@ -121,7 +120,7 @@ class WordsParticles {
             vertexShader: ShaderLoader.get("simulation_vs"),
             fragmentShader: ShaderLoader.get("simulation_fs"),
             transparent: true,
-            //blending: THREE.AdditiveBlending,
+            blending: THREE.AdditiveBlending,
             side: THREE.DoubleSide
         });
 
@@ -143,7 +142,7 @@ class WordsParticles {
         //*
         FBO.init(this.particlesColumns, this.particlesRows, this.renderer, this.simulationShader, this.renderShader);
         this.particles = FBO.particles;
-        this.particles.position.z = -4000;
+        this.particles.position.z = 0;
         this.particles.position.y = 200;
 
         this.callback();
@@ -155,7 +154,7 @@ class WordsParticles {
         this.index = index;
         this.color = color;
         // texture swap
-        console.log(this.simulationShader)
+        //console.log(this.simulationShader)
         this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
         this.simulationShader.uniforms.newPosition.value = this.index;
 

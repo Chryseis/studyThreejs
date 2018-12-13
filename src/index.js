@@ -7,8 +7,9 @@ import Lion from './components/Lion'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
 import WordsParticles from './components/WordsParticles'
+import {makeSprite} from './common/js/utils'
 
-var scene, camera, renderer, orbit, light;
+let scene, camera, renderer, fboReady;
 
 scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
@@ -19,7 +20,7 @@ camera.position.y = 100;
 camera.position.x = 30;
 camera.updateProjectionMatrix();
 
-renderer = new THREE.WebGLRenderer({antialias: true});
+renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x242426);
@@ -59,29 +60,29 @@ orbit.maxDistance = 500;
 orbit.target.set(0, 5, 0);
 orbit.update();
 
-let words = new WordsParticles(renderer)
-words.init(function () {
-    words.updateText(0, 0x000000)
-    words.updateRender();
+let listener = new THREE.AudioListener();
+camera.add(listener);
+
+// create a global audio source
+let sound = new THREE.Audio(listener);
+
+// load a sound and set it as the Audio object's buffer
+let audioLoader = new THREE.AudioLoader();
+audioLoader.load('/bgMusic.ogg', function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
 });
 
-function makeSprite() {
 
-    let canvas = document.createElement('canvas'),
-        ctx = canvas.getContext('2d');
 
-    let spriteSize = 2;
-    canvas.width = canvas.height = spriteSize * 2;
-    ctx.fillStyle = '#FFF';
-    ctx.beginPath();
-    ctx.arc(spriteSize, spriteSize, spriteSize, 0, TWOPI, true);
-    ctx.fill();
-
-    let sprite = new THREE.Texture(canvas);
-    sprite.needsUpdate = true;
-
-    return sprite;
-}
+let words = new WordsParticles(renderer)
+words.init(function () {
+    scene.add(words.particles);
+    fboReady = true;
+    words.updateText(0, 0xfb4402);
+});
 
 /*////////////////////////////////////////*/
 //Lion
@@ -378,7 +379,7 @@ Log.prototype = Object.assign(THREE.Mesh.prototype, {
 });
 
 
-let logs = Array(3).fill(null);
+let logs = Array(5).fill(null);
 logs.forEach((log, i) => {
     log = new Log();
     //log.position.z = 15 * Math.cos((i / logs.length) * TWOPI);
@@ -556,7 +557,6 @@ function pointsParticles() {
 let updateParticles;
 updateParticles = pointsParticles();
 
-
 renderer.gammaInput = true;
 renderer.gammaOutput = true;
 
@@ -585,6 +585,11 @@ function render() {
     rabbit.idle();
 
     dragon.idle();
+
+    if (fboReady) {
+        words.updateRender()
+    }
+
     // scene.traverse( (child) => {
     //   if ( child.material ) { child.material.needsUpdate = true; }
     // });
@@ -593,7 +598,6 @@ function render() {
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
 
     renderer.render(scene, camera);
-
 
 };
 

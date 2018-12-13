@@ -64,7 +64,6 @@ var FBO = function (exports) {
 
     //7 update loop
     exports.update = function () {
-
         //1 update the simulation and render the result in a target texture
         exports.renderer.render(scene, orthoCamera, rtt, true);
 
