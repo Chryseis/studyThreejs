@@ -52,6 +52,7 @@ class WordsParticles {
     }
 
     init(callback) {
+        console.log(textCreated,'textCreated')
         if (textCreated) {
             callback();
             return;
@@ -75,12 +76,12 @@ class WordsParticles {
         this.titleCanvas = document.createElement('canvas');
 
         this.ctx = this.titleCanvas.getContext("2d");
-        this.ctx.scale(2, 2);
+        this.ctx.scale(1, 1);
         this.titleCanvas.width = this.particlesColumns;
         this.titleCanvas.height = this.particlesColumns;
 
         this.ctx.textAlign = "center";
-        this.ctx.font = "1000px 'Yeseva'";
+        this.ctx.font = "240px 'Yeseva'";
         var posY = 0;
 
         for (var i = 0, l = this.texts.length; i < l; i++) {
@@ -142,8 +143,9 @@ class WordsParticles {
         //*
         FBO.init(this.particlesColumns, this.particlesRows, this.renderer, this.simulationShader, this.renderShader);
         this.particles = FBO.particles;
+        this.particles.position.x = 200;
         this.particles.position.z = 0;
-        this.particles.position.y = 200;
+        this.particles.position.y = 500;
 
         this.callback();
 

@@ -15,8 +15,8 @@ scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
 
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
-camera.position.z = 100;
-camera.position.y = 100;
+camera.position.z = 200;
+camera.position.y = 200;
 camera.position.x = 30;
 camera.updateProjectionMatrix();
 
@@ -71,17 +71,17 @@ let audioLoader = new THREE.AudioLoader();
 audioLoader.load('/bgMusic.ogg', function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.5);
+    sound.setVolume(0.1);
     sound.play();
 });
-
 
 
 let words = new WordsParticles(renderer)
 words.init(function () {
     scene.add(words.particles);
+    words.particles.position.set(0, 0, 0)
     fboReady = true;
-    words.updateText(0, 0xfb4402);
+    words.updateText(1, 0xfb4402);
 });
 
 /*////////////////////////////////////////*/
@@ -590,11 +590,6 @@ function render() {
         words.updateRender()
     }
 
-    // scene.traverse( (child) => {
-    //   if ( child.material ) { child.material.needsUpdate = true; }
-    // });
-
-
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
 
     renderer.render(scene, camera);
@@ -602,3 +597,18 @@ function render() {
 };
 
 render();
+
+// let words = new WordsParticles(renderer);
+// words.init(function () {
+//     scene.add(words.particles);
+//     fboReady = true;
+//     words.updateText(1, 0xffffff);
+// })
+//
+// function render() {
+//     requestAnimationFrame(render);
+//     renderer.render(scene, camera)
+// }
+//
+// render();
+
