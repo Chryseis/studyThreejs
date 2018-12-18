@@ -7,7 +7,7 @@ const baseConf = require('./base.conf')
 module.exports = merge(baseConf, {
     mode: 'development',
     entry: {
-        app: ['webpack-hot-middleware/client?reload=true', path.resolve(__dirname, '../src/index')]
+        app: ['webpack-hot-middleware/client?reload=true', path.resolve(__dirname, '../src/textCantainer')]
     },
     output: {
         path: path.resolve(__dirname, '../dist'),

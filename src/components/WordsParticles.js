@@ -21,7 +21,7 @@ class WordsParticles {
         this.bgrFront = this.bgr2;
         this.renderer = renderer;
         this.index = this.oldIndex = 0;
-        this.color = this.oldColor = 0xfffffff;
+        this.color = this.oldColor = 0x000000;
         this.timer = 0;
         this.isVisible = false;
         wordsInstance = this;
@@ -52,7 +52,7 @@ class WordsParticles {
     }
 
     init(callback) {
-        console.log(textCreated,'textCreated')
+        console.log(textCreated, 'textCreated')
         if (textCreated) {
             callback();
             return;
@@ -67,10 +67,10 @@ class WordsParticles {
     }
 
     createTexts() {
-        this.texts = ["Chilliness", "Petting", "Relief", "Paranoia", "Hope", "Truth"];
+        this.texts = [];
         this.timer = 0;
-        this.particlesColumns = 2048;
-        this.particlesRows = 190;
+        this.particlesColumns = 4096;
+        this.particlesRows = 300;
         this.particlesCount = this.particlesColumns * this.particlesRows;
         //this.titleCanvas = document.getElementById("mycanvas");
         this.titleCanvas = document.createElement('canvas');
@@ -81,7 +81,7 @@ class WordsParticles {
         this.titleCanvas.height = this.particlesColumns;
 
         this.ctx.textAlign = "center";
-        this.ctx.font = "240px 'Yeseva'";
+        this.ctx.font = "200px 'Yeseva'";
         var posY = 0;
 
         for (var i = 0, l = this.texts.length; i < l; i++) {
@@ -143,34 +143,35 @@ class WordsParticles {
         //*
         FBO.init(this.particlesColumns, this.particlesRows, this.renderer, this.simulationShader, this.renderShader);
         this.particles = FBO.particles;
-        this.particles.position.x = 200;
         this.particles.position.z = 0;
-        this.particles.position.y = 500;
+        this.particles.position.x = 0;
+        this.particles.position.y = 0;
 
         this.callback();
 
     }
 
-    updateText(index, color) {
-
-        this.index = index;
+    updateText(text, color) {
+        console.log(text)
         this.color = color;
         // texture swap
-        //console.log(this.simulationShader)
-        this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
-        this.simulationShader.uniforms.newPosition.value = this.index;
+        // console.log(this.simulationShader)
+        // this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
+        // this.simulationShader.uniforms.newPosition.value = this.index;
+        this.ctx.clearRect(0, 0, this.particlesColumns, this.particlesColumns)
+        this.ctx.fillText(text, this.titleCanvas.width / 2, 230);
+        this.simulationShader.uniforms.texture.value = new THREE.CanvasTexture(this.titleCanvas);
 
         // color particles
         this.renderShader.uniforms.animRatio.value = 0;
         this.renderShader.uniforms.currentCol.value = new THREE.Color(this.oldColor);
         this.renderShader.uniforms.newCol.value = new THREE.Color(this.color);
-        TweenMax.to(this.renderShader.uniforms.animRatio, .5, {value: 2, ease: Linear.easeNone});
+        //TweenMax.to(this.renderShader.uniforms.animRatio, .5, {value: .6, ease: Linear.easeNone});
 
         // position particles
         this.simulationShader.uniforms.animRatio.value = 0;
         TweenMax.to(this.simulationShader.uniforms.animRatio, 1.5, {value: 2, ease: Linear.easeNone});
 
-        this.oldIndex = index;
         this.oldColor = color;
 
         this.show();
