@@ -68,13 +68,9 @@ function render() {
 
 render();
 
-document.body.onclick = function () {
-    if (fboReady) {
-        wordsParticles.hide(function () {
-            wordsParticles.updateText('WinWin GROUP,Happy', colors[Math.floor(Math.random() * colors.length)]);
-        })
-    }
-    //wordsParticles.updateText('哈哈哈哈', 0x000000);
-}
-
 document.querySelector('#text-container').appendChild(renderer1.domElement);
+
+export {
+    fboReady,
+    wordsParticles
+}

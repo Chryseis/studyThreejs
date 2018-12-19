@@ -8,9 +8,19 @@ import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
 import {makeSprite} from './common/js/utils'
 
-import './text'
+import {fboReady, wordsParticles} from './text'
 
-let scene, camera, renderer, fboReady;
+
+document.body.onclick = function () {
+    if (fboReady) {
+        wordsParticles.hide(function () {
+            wordsParticles.updateText('WinWin GROUP,Happy', colors[Math.floor(Math.random() * colors.length)]);
+        })
+    }
+}
+
+
+let scene, camera, renderer;
 
 scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
@@ -590,10 +600,6 @@ function render() {
     rabbit.idle();
 
     dragon.idle();
-
-    if (fboReady) {
-        words.updateRender()
-    }
 
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
 
