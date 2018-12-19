@@ -370,7 +370,6 @@ Log.prototype = Object.assign(THREE.Mesh.prototype, {
     constructor: Log
 });
 
-
 let logs = Array(5).fill(null);
 logs.forEach((log, i) => {
     log = new Log();
@@ -391,7 +390,7 @@ logs.forEach((log, i) => {
 
 function snowyGround() {
 
-    let geometry = new THREE.PlaneGeometry(500, 500, 22, 12);
+    let geometry = new THREE.PlaneGeometry(1000, 1000, 22, 12);
     for (let i = 0; i < geometry.vertices.length; i++) {
         //geometry.vertices[i].x += (Math.cos( i * i )+1/2);
         //geometry.vertices[i].y += (Math.cos(i )+1/2);
@@ -484,17 +483,23 @@ Tree.prototype = Object.assign(THREE.Object3D.prototype, {
 
 let trees = [];
 
-for (let i = 0; i < 36;) {
+let rounds = [{x: 200, z: 260, count: 36, size: 6},
+    {x: 220, z: 320, count: 40, size: 8}, {
+        x: 250,
+        z: 360,
+        count: 50,
+        size: 10
+    }]
 
-    let tree = new Tree;
-    tree.scale.set(3.25, 3.25, 3.25);
-
-    tree.position.x = Math.sin(i + Math.random() * 0.2) * 200;//(treeCount/2 - i) * 30;
-    tree.position.z = Math.cos(i + Math.random() * 0.1) * 260;
-    trees.push(tree);
-    scene.add(tree);
-
-    i++; //= Math.random() * 1.2;
+for (let k = 0; k < rounds.length; k++) {
+    for (let i = 0; i < rounds[k].count; i++) {
+        let tree = new Tree(rounds[k].size);
+        tree.scale.set(3.25, 3.25, 3.25);
+        tree.position.x = Math.sin(i + Math.random() * 0.2) * rounds[k].x;//(treeCount/2 - i) * 30;
+        tree.position.z = Math.cos(i + Math.random() * 0.1) * rounds[k].z;
+        trees.push(tree);
+        scene.add(tree);
+    }
 }
 
 
@@ -508,16 +513,24 @@ function pointsParticles() {
     let pointGeometry = new THREE.Geometry();
 
     for (let i = 0; i < 10000; i++) {
-        var vertex = new THREE.Vector3();
-        vertex.x = Math.random() * 500 - 100;
+        let vertex = new THREE.Vector3();
+        vertex.x = Math.random() * 1000;
         vertex.y = Math.random() * 500;
-        vertex.z = Math.random() * 800 - 100;
+        vertex.z = Math.random() * 1000;
         pointGeometry.vertices.push(vertex);
     }
 
-    // pointGeometry.verticesNeedUpdate = true;
-    // pointGeometry.normalsNeedUpdate = true;
-    // pointGeometry.computeFaceNormals();
+    for (let i = 0; i < 10000; i++) {
+        let vertex = new THREE.Vector3();
+        vertex.x = -(Math.random() * 1000);
+        vertex.y = Math.random() * 500;
+        vertex.z = -(Math.random() * 1000);
+        pointGeometry.vertices.push(vertex);
+    }
+
+    pointGeometry.verticesNeedUpdate = true;
+    pointGeometry.normalsNeedUpdate = true;
+    pointGeometry.computeFaceNormals();
 
     let pointMaterial = new THREE.PointsMaterial({
         //size: 16,
@@ -589,18 +602,4 @@ function render() {
 };
 
 render();
-
-// let words = new WordsParticles(renderer);
-// words.init(function () {
-//     scene.add(words.particles);
-//     fboReady = true;
-//     words.updateText(1, 0xffffff);
-// })
-//
-// function render() {
-//     requestAnimationFrame(render);
-//     renderer.render(scene, camera)
-// }
-//
-// render();
 

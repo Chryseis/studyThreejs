@@ -33,7 +33,7 @@ class WordsParticles {
         try {
             WebFont.load({
                 custom: {
-                    families: ['YesevaOne'],
+                    families: ['Tangerine-Regular'],
                 },
                 loading: function () {
                 },
@@ -52,7 +52,6 @@ class WordsParticles {
     }
 
     init(callback) {
-        console.log(textCreated, 'textCreated')
         if (textCreated) {
             callback();
             return;
@@ -158,8 +157,18 @@ class WordsParticles {
         // this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
         // this.simulationShader.uniforms.newPosition.value = this.index;
         this.ctx.clearRect(0, 0, this.particlesColumns, this.particlesColumns);
-        this.ctx.font = "240px 'YesevaOne'";
-        this.ctx.fillText(text, this.titleCanvas.width / 2, 180);
+        this.ctx.font = "240px 'Tangerine-Regular'";
+
+        let texts = text.split(',');
+        let posY = 0;
+        for (let i = 0, l = texts.length; i < l; i++) {
+            posY += 180;
+            let t = texts[i].toUpperCase();
+            t = t.split("").join("");
+            this.ctx.fillText(t, this.titleCanvas.width / 2, posY);
+            posY += 50;
+        }
+        // this.ctx.fillText(text, this.titleCanvas.width / 2, 180);
         this.simulationShader.uniforms.texture.value = new THREE.CanvasTexture(this.titleCanvas);
 
         // color particles

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols'
 import WordsParticles from './components/WordsParticles'
 
-const colors = [0xebe5e7, 0x000000]
+const colors = [0xebe5e7, 0xe0dacd, 0xdbe6e6]
 
 let fboReady = false;
 let scene1 = new THREE.Scene();
@@ -71,7 +71,7 @@ render();
 document.body.onclick = function () {
     if (fboReady) {
         wordsParticles.hide(function () {
-            wordsParticles.updateText('WelCome,CCCC', 0xb297a2);
+            wordsParticles.updateText('WinWin GROUP,Happy', colors[Math.floor(Math.random() * colors.length)]);
         })
     }
     //wordsParticles.updateText('哈哈哈哈', 0x000000);
