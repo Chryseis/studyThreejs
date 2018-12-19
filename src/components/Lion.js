@@ -6,7 +6,7 @@ import {rule3} from '../common/js/utils'
 class Lion extends THREE.Group {
     constructor() {
         super();
-        this.idelingPos = {x: 0, y: 0};
+        this.idelingPos = {x: 0, y: 0};;
         this.windTime = 0;
         this.isIdeling = false;
         this.acitve = false;

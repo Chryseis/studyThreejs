@@ -2,22 +2,15 @@ import './common/css/reset.css'
 import './common/css/common.less'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import {TweenMax, RoughEase, Power2} from "gsap";
+import {TweenMax, RoughEase, Power2, Power4} from "gsap";
 import Lion from './components/Lion'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
+import Log from './components/Log'
+import Flame from './components/Flame'
 import {makeSprite} from './common/js/utils'
-
+import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from './common/js/constants'
 import {fboReady, wordsParticles} from './text'
-
-
-document.body.onclick = function () {
-    if (fboReady) {
-        wordsParticles.hide(function () {
-            wordsParticles.updateText('WinWin GROUP,Happy', colors[Math.floor(Math.random() * colors.length)]);
-        })
-    }
-}
 
 
 let scene, camera, renderer;
@@ -26,9 +19,9 @@ scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
 
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
-camera.position.z = 200;
-camera.position.y = 200;
-camera.position.x = 30;
+camera.position.z = CamaraInit.z;
+camera.position.y = CamaraInit.y;
+camera.position.x = CamaraInit.x;
 camera.updateProjectionMatrix();
 
 renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
@@ -46,7 +39,25 @@ window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 
+document.body.onclick = function () {
+    if (fboReady) {
+        TweenMax.to(orbit.object.position, 1, {
+            x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
+                camera.position.z = orbit.object.position.z;
+                camera.position.y = orbit.object.position.y;
+                camera.position.x = orbit.object.position.x;
+            }, onComplete: () => {
+
+            }
+        })
+        wordsParticles.hide(function () {
+            wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
+        })
+    }
+}
+
 document.body.appendChild(renderer.domElement);
+renderer.domElement.id = 'main'
 
 /*////////////////////////////////////////*/
 const orbit = new OrbitControls(camera, renderer.domElement);
@@ -122,7 +133,6 @@ scene.add(ambientLight);
 
 
 let hemiLight = new THREE.HemisphereLight(0xEBF7FD, 0xEBF7FD, 0.2);
-//hemiLight.color.setRGB(0.75,0.8,0.95);
 hemiLight.position.set(0, 100, 0);
 scene.add(hemiLight);
 
@@ -157,122 +167,9 @@ let noise = noiseMap(512, 60);
 
 
 /*////////////////////////////////////////*/
-
-
-//var gui = new dat.GUI();
-//let l = 0;
-function makeLight(color) {
-    let light = new THREE.PointLight(color || 0xFFFFFF, 1, 0);
-
-    light.castShadow = true;
-    light.shadow.mapSize.width = 512;
-    light.shadow.mapSize.height = 512;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 120;
-    light.shadow.bias = 0.9;
-    light.shadow.radius = 10;
-
-    light.power = 15;
-
-    // var sphereSize = 20;
-    // var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
-    // light.add( pointLightHelper );
-
-    return light;
-}
-
-function Flame(color) {
-
-    THREE.Group.apply(this, arguments);
-
-    this.light = makeLight(color);
-
-    this.light.position.y += 7;
-    this.add(this.light);
-
-    let geometry = new THREE.CylinderGeometry(0, 8, 8, 3); //new THREE.BoxGeometry(10,10,10);
-    let material = new THREE.MeshPhongMaterial({
-        color: color,
-        //specular: 0x009900,
-        shininess: 550,
-        emissive: color,
-        transparent: true,
-        opacity: 0.4,
-        flatShading: THREE.FlatShading
-    });
-
-    let flame = new THREE.Mesh(geometry, material);
-
-    this.flame = flame;
-
-    this.add(flame);
-
-    this.scale.y = 2;
-
-    this.flicker(this.flicker);
-
-}
-
-Flame.prototype = Object.assign(THREE.Group.prototype, {
-    constructor: Flame,
-
-    flicker(onComplete) {
-
-        let speed = 0.1 + Math.random() * 0.1;
-        let ease = RoughEase.ease.config({
-            template: Power2.easeInOut,
-            strength: 0.3,
-            points: 10,
-            taper: "none",
-            randomize: true,
-            clamp: true
-        });
-
-        var tl = new TimelineMax({
-            onComplete: function () {
-                this.reverse()
-            },
-            onReverseComplete: onComplete,
-            onReverseCompleteScope: this,
-            onReverseCompleteParams: [onComplete]
-        });
-
-
-        let scale = 2 + Math.random() * 2
-        tl.to(this.scale, speed, {
-            y: scale,
-            ease: ease,
-        });
-        tl.to(this.position, speed, {
-            y: '+=' + (scale * 1.5),
-            ease: ease,
-        });
-
-        // tl.to(this.rotation, speed, {
-        //   x: (Math.PI / 4) * (Math.random() - 0.5),
-        //   //y: (Math.PI / 6) * (Math.random() - 0.5),
-        //   //z: (Math.PI / 5) * (Math.random() - 0.5),
-        //   ease: ease,
-        // });
-
-        tl.to(this.light, speed, {
-            power: 8 + 9 * Math.random(),
-            ease: ease,
-        });
-    }
-});
-
-// fire = new Fire();
-// fire.position.y = 10;
-
-let colors = [0xdb2902, 0xfb4402];
-const TWOPI = Math.PI * 2;
-const HALFPI = Math.PI / 2;
 let flames = Array(5).fill(null);
 flames.forEach((flame, i) => {
-
-    flame = new Flame(colors[Math.floor(colors.length * Math.random())]);
-
+    flame = new Flame(FireColors[Math.floor(FireColors.length * Math.random())]);
     flame.position.z = 9 * Math.cos((i / flames.length) * TWOPI) + Math.sin(Math.random());
     flame.position.x = 9 * Math.sin((i / flames.length) * TWOPI) + Math.sin(Math.random());
     flame.position.y = 14;
@@ -292,7 +189,7 @@ function makeFireParticles() {
     let pointGeometry = new THREE.Geometry();
 
     for (let i = 0; i < 20; i++) {
-        var vertex = new THREE.Vector3();
+        let vertex = new THREE.Vector3();
         vertex.x = Math.random() * 16 - 8;
         vertex.y = Math.random() * 60;
         vertex.z = Math.random() * 16 - 8;
@@ -338,58 +235,13 @@ fireParticles = makeFireParticles();
 
 /*////////////////////////////////////////*/
 // LOG
-
-let logMaterial = new THREE.MeshPhongMaterial({
-    color: 0x5C2626,
-    shininess: 10,
-    flatShading: THREE.FlatShading
-});
-
-let logEndMaterial = new THREE.MeshPhongMaterial({
-    color: 0xF9F5CE,
-    shininess: 10,
-    flatShading: THREE.FlatShading
-});
-
-function Log() {
-
-    let geometry = new THREE.BoxGeometry(10, 10, 40);
-
-    THREE.Mesh.call(this, geometry, logMaterial);
-
-
-    let endGeometry = new THREE.BoxGeometry(7, 7, 0.5);
-    let end = new THREE.Mesh(endGeometry, logEndMaterial);
-    end.position.z = 20;
-    this.add(end);
-
-    let otherEnd = new THREE.Mesh(endGeometry, logEndMaterial);
-    otherEnd.position.z = -20;
-    this.add(otherEnd);
-    //let otherEnd = end.clone();
-
-//   otherEnd.position.z = -20;
-
-//   this.add(end, otherEnd);
-
-    this.castShadow = true;
-    this.receiveShadow = true;
-}
-
-Log.prototype = Object.assign(THREE.Mesh.prototype, {
-    constructor: Log
-});
-
 let logs = Array(5).fill(null);
 logs.forEach((log, i) => {
     log = new Log();
-    //log.position.z = 15 * Math.cos((i / logs.length) * TWOPI);
     log.position.x = 15 * Math.sin((i / logs.length) * TWOPI) + Math.sin(Math.random());
     log.position.y = 5;
     log.position.z = 1;
-
     log.rotation.z = HALFPI / 2;// * Math.sin(i+1);
-    //log.rotation.y = HALFPI / 2 * Math.cos((i / logs.length) * TWOPI);
     scene.add(log);
 });
 

@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols'
 import WordsParticles from './components/WordsParticles'
 
-const colors = [0xebe5e7, 0xe0dacd, 0xdbe6e6]
-
 let fboReady = false;
 let scene1 = new THREE.Scene();
 let camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6000)

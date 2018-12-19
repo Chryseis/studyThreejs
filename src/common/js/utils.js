@@ -1,7 +1,5 @@
 import * as THREE from 'three'
-
-const TWOPI = Math.PI * 2;
-const HALFPI = Math.PI / 2;
+import {TWOPI} from './constants'
 
 function rule3(v, vmin, vmax, tmin, tmax) {
     var nv = Math.max(Math.min(v, vmax), vmin);
