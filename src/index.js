@@ -6,8 +6,9 @@ import {TweenMax, RoughEase, Power2} from "gsap";
 import Lion from './components/Lion'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
-import WordsParticles from './components/WordsParticles'
 import {makeSprite} from './common/js/utils'
+
+import './text'
 
 let scene, camera, renderer, fboReady;
 
@@ -73,15 +74,6 @@ audioLoader.load('/bgMusic.ogg', function (buffer) {
     sound.setLoop(true);
     sound.setVolume(0.1);
     sound.play();
-});
-
-
-let words = new WordsParticles(renderer)
-words.init(function () {
-    scene.add(words.particles);
-    words.particles.position.set(0, 0, 0)
-    fboReady = true;
-    words.updateText(1, 0xfb4402);
 });
 
 /*////////////////////////////////////////*/

@@ -69,8 +69,8 @@ class WordsParticles {
     createTexts() {
         this.texts = [];
         this.timer = 0;
-        this.particlesColumns = 4096;
-        this.particlesRows = 300;
+        this.particlesColumns = 2048;
+        this.particlesRows = 500;
         this.particlesCount = this.particlesColumns * this.particlesRows;
         //this.titleCanvas = document.getElementById("mycanvas");
         this.titleCanvas = document.createElement('canvas');
@@ -81,16 +81,16 @@ class WordsParticles {
         this.titleCanvas.height = this.particlesColumns;
 
         this.ctx.textAlign = "center";
-        this.ctx.font = "200px 'Yeseva'";
+        //this.ctx.font = "230px 'Tangerine'";
         var posY = 0;
 
-        for (var i = 0, l = this.texts.length; i < l; i++) {
-            posY += 180;
-            var t = this.texts[i].toUpperCase();
-            t = t.split("").join("");
-            this.ctx.fillText(t, this.titleCanvas.width / 2, posY);
-            posY += 10;
-        }
+        // for (var i = 0, l = this.texts.length; i < l; i++) {
+        //     posY += 180;
+        //     var t = this.texts[i].toUpperCase();
+        //     t = t.split("").join("");
+        //     this.ctx.fillText(t, this.titleCanvas.width / 2, posY);
+        //     posY += 10;
+        // }
 
         this.tex = new THREE.CanvasTexture(this.titleCanvas);
         var sl = new ShaderLoader();
@@ -145,28 +145,28 @@ class WordsParticles {
         this.particles = FBO.particles;
         this.particles.position.z = 0;
         this.particles.position.x = 0;
-        this.particles.position.y = 0;
+        this.particles.position.y = 400;
 
         this.callback();
 
     }
 
     updateText(text, color) {
-        console.log(text)
         this.color = color;
         // texture swap
         // console.log(this.simulationShader)
         // this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
         // this.simulationShader.uniforms.newPosition.value = this.index;
-        this.ctx.clearRect(0, 0, this.particlesColumns, this.particlesColumns)
-        this.ctx.fillText(text, this.titleCanvas.width / 2, 230);
+        this.ctx.clearRect(0, 0, this.particlesColumns, this.particlesColumns);
+        this.ctx.font = "240px 'YesevaOne'";
+        this.ctx.fillText(text, this.titleCanvas.width / 2, 180);
         this.simulationShader.uniforms.texture.value = new THREE.CanvasTexture(this.titleCanvas);
 
         // color particles
         this.renderShader.uniforms.animRatio.value = 0;
         this.renderShader.uniforms.currentCol.value = new THREE.Color(this.oldColor);
         this.renderShader.uniforms.newCol.value = new THREE.Color(this.color);
-        //TweenMax.to(this.renderShader.uniforms.animRatio, .5, {value: .6, ease: Linear.easeNone});
+        TweenMax.to(this.renderShader.uniforms.animRatio, .5, {value: 5, ease: Linear.easeNone});
 
         // position particles
         this.simulationShader.uniforms.animRatio.value = 0;
