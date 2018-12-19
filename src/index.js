@@ -41,15 +41,15 @@ window.addEventListener('resize', function () {
 
 document.body.onclick = function () {
     if (fboReady) {
-        TweenMax.to(orbit.object.position, 1, {
-            x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
-                camera.position.z = orbit.object.position.z;
-                camera.position.y = orbit.object.position.y;
-                camera.position.x = orbit.object.position.x;
-            }, onComplete: () => {
-
-            }
-        })
+        // TweenMax.to(orbit.object.position, 1, {
+        //     x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
+        //         camera.position.z = orbit.object.position.z;
+        //         camera.position.y = orbit.object.position.y;
+        //         camera.position.x = orbit.object.position.x;
+        //     }, onComplete: () => {
+        //
+        //     }
+        // })
         wordsParticles.hide(function () {
             wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
         })
@@ -254,8 +254,6 @@ function snowyGround() {
 
     let geometry = new THREE.PlaneGeometry(1000, 1000, 22, 12);
     for (let i = 0; i < geometry.vertices.length; i++) {
-        //geometry.vertices[i].x += (Math.cos( i * i )+1/2);
-        //geometry.vertices[i].y += (Math.cos(i )+1/2);
         geometry.vertices[i].z = (Math.sin(i * i * i) + 1 / 2) * 3;
     }
     geometry.verticesNeedUpdate = true;
@@ -265,13 +263,8 @@ function snowyGround() {
     let material = new THREE.MeshPhongMaterial({
         color: 0xFFFFFF,
         shininess: 60,
-        //metalness: 1,
-        //specularMap: noiseMap(512,255),
         bumpMap: noise,
         bumpScale: 0.025,
-        //emissive: 0xEBF7FD,
-        //emissiveIntensity: 0.05,
-        //flatShading: THREE.SmoothShading
     });
 
     let plane = new THREE.Mesh(geometry, material);
@@ -292,8 +285,6 @@ scene.add(snowyGround());
 let treeMaterial = new THREE.MeshPhongMaterial({
     color: 0x2C9E4B,
     shininess: 20,
-    //bumpMap: noiseMap(256, 5),
-    //bumpScale: 0.5,
     side: THREE.FrontSide,
     flatShading: THREE.SmoothShading
 });
@@ -345,9 +336,9 @@ Tree.prototype = Object.assign(THREE.Object3D.prototype, {
 
 let trees = [];
 
-let rounds = [{x: 200, z: 260, count: 36, size: 6},
-    {x: 220, z: 320, count: 40, size: 8}, {
-        x: 250,
+let rounds = [{x: 200, z: 260, count: 30, size: 6},
+    {x: 240, z: 320, count: 36, size: 8}, {
+        x: 280,
         z: 360,
         count: 50,
         size: 10
@@ -369,7 +360,6 @@ for (let k = 0; k < rounds.length; k++) {
 
 // FALLING SNOW
 
-
 function pointsParticles() {
 
     let pointGeometry = new THREE.Geometry();
@@ -387,6 +377,22 @@ function pointsParticles() {
         vertex.x = -(Math.random() * 1000);
         vertex.y = Math.random() * 500;
         vertex.z = -(Math.random() * 1000);
+        pointGeometry.vertices.push(vertex);
+    }
+
+    for (let i = 0; i < 10000; i++) {
+        let vertex = new THREE.Vector3();
+        vertex.x = (Math.random() * 1000);
+        vertex.y = Math.random() * 500;
+        vertex.z = -(Math.random() * 1000);
+        pointGeometry.vertices.push(vertex);
+    }
+
+    for (let i = 0; i < 10000; i++) {
+        let vertex = new THREE.Vector3();
+        vertex.x = -(Math.random() * 1000);
+        vertex.y = Math.random() * 500;
+        vertex.z = (Math.random() * 1000);
         pointGeometry.vertices.push(vertex);
     }
 

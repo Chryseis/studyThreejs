@@ -4,8 +4,8 @@ import WordsParticles from './components/WordsParticles'
 
 let fboReady = false;
 let scene1 = new THREE.Scene();
-let camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6000)
-camera1.position.z = 6000;
+let camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6500)
+camera1.position.z = 6500;
 camera1.position.y = 0;
 camera1.position.x = 0;
 
@@ -52,7 +52,7 @@ let wordsParticles = new WordsParticles(renderer1);
 wordsParticles.init(() => {
     scene1.add(wordsParticles.particles);
     fboReady = true;
-    wordsParticles.updateText('WelCome,欢欢', 0xb297a2);
+    wordsParticles.updateText('WelCome,欢欢,哈哈哈', 0xb297a2);
 });
 
 function render() {

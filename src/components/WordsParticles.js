@@ -69,7 +69,7 @@ class WordsParticles {
         this.texts = [];
         this.timer = 0;
         this.particlesColumns = 2048;
-        this.particlesRows = 500;
+        this.particlesRows = 1000;
         this.particlesCount = this.particlesColumns * this.particlesRows;
         //this.titleCanvas = document.getElementById("mycanvas");
         this.titleCanvas = document.createElement('canvas');
@@ -144,7 +144,7 @@ class WordsParticles {
         this.particles = FBO.particles;
         this.particles.position.z = 0;
         this.particles.position.x = 0;
-        this.particles.position.y = 400;
+        this.particles.position.y = -1000;
 
         this.callback();
 
