@@ -6,7 +6,8 @@ import {rule3} from '../common/js/utils'
 class Lion extends THREE.Group {
     constructor() {
         super();
-        this.idelingPos = {x: 0, y: 0};;
+        this.idelingPos = {x: 0, y: 0};
+        ;
         this.windTime = 0;
         this.isIdeling = false;
         this.acitve = false;
@@ -520,6 +521,61 @@ class Lion extends THREE.Group {
                 this.isActive = false;
             }
         })
+    }
+
+    fix() {
+        TweenMax.killTweensOf(this.head.rotation);
+
+        this.tHeadRotY = 0;
+        this.tHeadRotX = 0;
+        this.tHeadRotZ = 0;
+        this.tHeadPosX = 0;
+        this.tHeadPosY = 60;
+        this.tHeadPosZ = -40;
+
+        this.tEyeScale = 1;
+        this.tIrisYScale = 1;
+        this.tIrisZScale = 1;
+        this.tIrisPosY = 25;
+        this.tLeftIrisPosZ = 120;
+        this.tRightIrisPosZ = 120;
+
+        this.tLipsPosX = 0;
+        this.tLipsPosY = -45;
+
+        this.tSmilePosX = 0;
+        this.tMouthPosZ = 174;
+        this.tSmilePosZ = 173;
+        this.tSmilePosY = -15;
+        this.tSmileRotZ = -Math.PI;
+
+        this.tRightKneeRotZ = .3;
+        this.tLeftKneeRotZ = .3;
+
+        this.updateBody(10);
+
+        this.mane.rotation.y = 0;
+        this.mane.rotation.x = 0;
+
+        for (let i = 0; i < this.maneParts.length; i++) {
+            let m = this.maneParts[i].mesh;
+            m.position.z = 0;
+            m.rotation.y = 0;
+        }
+
+        for (let i = 0; i < this.mustaches.length; i++) {
+            let m = this.mustaches[i];
+            m.rotation.y = 0;
+        }
+
+        for (let i = 0; i < this.bodyVertices.length; i++) {
+            let tvInit = this.bodyInitPositions[i];
+            let tv = this.body.geometry.vertices[this.bodyVertices[i]];
+            if (tv) {
+                tv.x = tvInit.x + this.head.position.x;
+            }
+        }
+        this.body.geometry.verticesNeedUpdate = true;
     }
 }
 

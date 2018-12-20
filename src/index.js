@@ -13,15 +13,13 @@ import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from '.
 import {fboReady, wordsParticles} from './text'
 
 
-let scene, camera, renderer;
+let scene, camera, renderer, isActive = false;
 
 scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
 
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
-camera.position.z = CamaraInit.z;
-camera.position.y = CamaraInit.y;
-camera.position.x = CamaraInit.x;
+camera.position.set(CamaraInit.x, CamaraInit.y, CamaraInit.z)
 camera.updateProjectionMatrix();
 
 renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
@@ -41,18 +39,38 @@ window.addEventListener('resize', function () {
 
 document.body.onclick = function () {
     if (fboReady) {
-        // TweenMax.to(orbit.object.position, 1, {
-        //     x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
-        //         camera.position.z = orbit.object.position.z;
-        //         camera.position.y = orbit.object.position.y;
-        //         camera.position.x = orbit.object.position.x;
-        //     }, onComplete: () => {
-        //
-        //     }
-        // })
+        console.log(orbit.object)
         wordsParticles.hide(function () {
             wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
         })
+        orbit.saveState();
+        TweenMax.to(orbit.object.position, 10, {
+            x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
+                camera.position.z = orbit.object.position.z;
+                camera.position.y = orbit.object.position.y;
+                camera.position.x = orbit.object.position.x;
+            }, onComplete: () => {
+                isActive = true;
+                wordsParticles.hide();
+                TweenMax.to(orbit.object.position, 3, {
+                    x: orbit.position0.x,
+                    y: orbit.position0.y,
+                    z: orbit.position0.z,
+                    ease: Power4.easeInOut,
+                    onUpdate: () => {
+                        camera.position.z = orbit.object.position.z;
+                        camera.position.y = orbit.object.position.y;
+                        camera.position.x = orbit.object.position.x;
+                    },
+                    onComplete: () => {
+                        isActive = false;
+                        wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
+                    }
+                });
+            }
+        })
+
+
     }
 }
 
@@ -79,7 +97,7 @@ orbit.maxPolarAngle = Math.PI * 0.5;
 orbit.minDistance = 40;
 orbit.maxDistance = 500;
 
-orbit.target.set(0, 5, 0);
+orbit.target.set(0, 0, 0);
 orbit.update();
 
 let listener = new THREE.AudioListener();
@@ -167,6 +185,7 @@ let noise = noiseMap(512, 60);
 
 
 /*////////////////////////////////////////*/
+//Flame
 let flames = Array(5).fill(null);
 flames.forEach((flame, i) => {
     flame = new Flame(FireColors[Math.floor(FireColors.length * Math.random())]);
@@ -336,8 +355,7 @@ Tree.prototype = Object.assign(THREE.Object3D.prototype, {
 
 let trees = [];
 
-let rounds = [{x: 200, z: 260, count: 30, size: 6},
-    {x: 240, z: 320, count: 36, size: 8}, {
+let rounds = [ {
         x: 280,
         z: 360,
         count: 50,
@@ -453,11 +471,17 @@ function render() {
         fire.flicker(count);
     }
 
-    lion.idle();
 
     rabbit.idle();
 
     dragon.idle();
+
+    if (!isActive) {
+        lion.idle();
+    } else {
+        lion.active();
+    }
+
 
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
 

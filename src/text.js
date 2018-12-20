@@ -3,14 +3,14 @@ import OrbitControls from 'three-orbitcontrols'
 import WordsParticles from './components/WordsParticles'
 
 let fboReady = false;
-let scene1 = new THREE.Scene();
-let camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6500)
-camera1.position.z = 6500;
-camera1.position.y = 0;
-camera1.position.x = 0;
+let sceneText = new THREE.Scene();
+let cameraText = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6500)
+cameraText.position.z = 6500;
+cameraText.position.y = 0;
+cameraText.position.x = 0;
 
 
-let renderer1 = new THREE.WebGLRenderer({
+let rendererText = new THREE.WebGLRenderer({
     alpha: true,
     antialias: true
 });
@@ -36,37 +36,43 @@ let renderer1 = new THREE.WebGLRenderer({
 //
 // controls.target.set(0, 5, 0);
 
-camera1.aspect = window.innerWidth / window.innerHeight;
-camera1.updateProjectionMatrix();
+cameraText.aspect = window.innerWidth / window.innerHeight;
+cameraText.updateProjectionMatrix();
 
-camera1.lookAt(new THREE.Vector3(0, 0, 0));
+cameraText.lookAt(new THREE.Vector3(0, 0, 0));
 
-renderer1.setPixelRatio(window.devicePixelRatio);
-renderer1.setSize(window.innerWidth, window.innerHeight);
-renderer1.shadowMap.enabled = true;
-renderer1.shadowMapSoft = true;
-renderer1.toneMappingExposure = 1.3;
+rendererText.setPixelRatio(window.devicePixelRatio);
+rendererText.setSize(window.innerWidth, window.innerHeight);
+rendererText.shadowMap.enabled = true;
+rendererText.shadowMapSoft = true;
+rendererText.toneMappingExposure = 1.3;
 
 
-let wordsParticles = new WordsParticles(renderer1);
+let wordsParticles = new WordsParticles(rendererText);
 wordsParticles.init(() => {
-    scene1.add(wordsParticles.particles);
+    sceneText.add(wordsParticles.particles);
     fboReady = true;
-    wordsParticles.updateText('WelCome,欢欢,哈哈哈', 0xb297a2);
+    wordsParticles.updateText('WelCome to,WinWin Group', 0xb297a2);
 });
 
 function render() {
     if (fboReady) {
         wordsParticles.updateRender();
     }
-    renderer1.render(scene1, camera1);
+    rendererText.render(sceneText, cameraText);
 
     requestAnimationFrame(render)
 }
 
 render();
 
-document.querySelector('#text-container').appendChild(renderer1.domElement);
+window.addEventListener('resize', function () {
+    cameraText.aspect = window.innerWidth / window.innerHeight;
+    cameraText.updateProjectionMatrix();
+    rendererText.setSize(window.innerWidth, window.innerHeight);
+}, false);
+
+document.querySelector('#text-container').appendChild(rendererText.domElement);
 
 export {
     fboReady,

@@ -9,9 +9,9 @@ const CamaraInit = {
 }
 
 const CamaraActive = {
-    x: 20,
-    y: 100,
-    z: 100
+    x: 90,
+    y: 80,
+    z: -20
 }
 
 
