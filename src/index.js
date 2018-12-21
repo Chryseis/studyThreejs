@@ -39,38 +39,37 @@ window.addEventListener('resize', function () {
 
 document.body.onclick = function () {
     if (fboReady) {
-        console.log(orbit.object)
-        wordsParticles.hide(function () {
-            wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
-        })
-        orbit.saveState();
-        TweenMax.to(orbit.object.position, 10, {
-            x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
-                camera.position.z = orbit.object.position.z;
-                camera.position.y = orbit.object.position.y;
-                camera.position.x = orbit.object.position.x;
-            }, onComplete: () => {
-                isActive = true;
-                wordsParticles.hide();
-                TweenMax.to(orbit.object.position, 3, {
-                    x: orbit.position0.x,
-                    y: orbit.position0.y,
-                    z: orbit.position0.z,
-                    ease: Power4.easeInOut,
-                    onUpdate: () => {
-                        camera.position.z = orbit.object.position.z;
-                        camera.position.y = orbit.object.position.y;
-                        camera.position.x = orbit.object.position.x;
-                    },
-                    onComplete: () => {
-                        isActive = false;
-                        wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
-                    }
-                });
-            }
-        })
-
-
+        isActive = !isActive
+        // wordsParticles.hide(function () {
+        //     wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
+        // })
+        // orbit.saveState();
+        // TweenMax.to(orbit.object.position, 10, {
+        //     x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
+        //         camera.position.z = orbit.object.position.z;
+        //         camera.position.y = orbit.object.position.y;
+        //         camera.position.x = orbit.object.position.x;
+        //     }, onComplete: () => {
+        //         isActive = true;
+        //         wordsParticles.hide();
+        //     }
+        // })
+        //
+        // TweenMax.to(orbit.object.position, 3, {
+        //     x: orbit.position0.x,
+        //     y: orbit.position0.y,
+        //     z: orbit.position0.z,
+        //     ease: Power4.easeInOut,
+        //     onUpdate: () => {
+        //         camera.position.z = orbit.object.position.z;
+        //         camera.position.y = orbit.object.position.y;
+        //         camera.position.x = orbit.object.position.x;
+        //     },
+        //     onComplete: () => {
+        //         isActive = false;
+        //         wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
+        //     }
+        // });
     }
 }
 
@@ -79,25 +78,25 @@ renderer.domElement.id = 'main'
 
 /*////////////////////////////////////////*/
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.enableZoom = true;
-orbit.enablePan = false;
-
-orbit.rotateSpeed = 0.3;
-orbit.zoomSpeed = 0.3;
-
-orbit.autoRotate = true;
-orbit.autoRotateSpeed = 0.6;
-
-//orbit.minPolarAngle = Math.PI * 0.3;
-orbit.maxPolarAngle = Math.PI * 0.5;
-
-//orbit.minAzimuthAngle = -Math.PI * 0.2; // radians
-//orbit.maxAzimuthAngle = Math.PI * 0.2; // radians
-
-orbit.minDistance = 40;
-orbit.maxDistance = 500;
-
-orbit.target.set(0, 0, 0);
+// orbit.enableZoom = true;
+// orbit.enablePan = false;
+//
+// orbit.rotateSpeed = 0.3;
+// orbit.zoomSpeed = 0.3;
+//
+// orbit.autoRotate = true;
+// orbit.autoRotateSpeed = 0.6;
+//
+// //orbit.minPolarAngle = Math.PI * 0.3;
+// orbit.maxPolarAngle = Math.PI * 0.5;
+//
+// //orbit.minAzimuthAngle = -Math.PI * 0.2; // radians
+// //orbit.maxAzimuthAngle = Math.PI * 0.2; // radians
+//
+// orbit.minDistance = 40;
+// orbit.maxDistance = 500;
+//
+// orbit.target.set(0, 0, 0);
 orbit.update();
 
 let listener = new THREE.AudioListener();
@@ -107,13 +106,13 @@ camera.add(listener);
 let sound = new THREE.Audio(listener);
 
 // load a sound and set it as the Audio object's buffer
-let audioLoader = new THREE.AudioLoader();
-audioLoader.load('/bgMusic.ogg', function (buffer) {
-    sound.setBuffer(buffer);
-    sound.setLoop(true);
-    sound.setVolume(0.1);
-    sound.play();
-});
+// let audioLoader = new THREE.AudioLoader();
+// audioLoader.load('/bgMusic.ogg', function (buffer) {
+//     sound.setBuffer(buffer);
+//     sound.setLoop(true);
+//     sound.setVolume(0.1);
+//     sound.play();
+// });
 
 /*////////////////////////////////////////*/
 //Lion
@@ -130,7 +129,7 @@ scene.add(lion);
 let rabbit = new Rabbit();
 rabbit.position.set(60, -5, -20);
 rabbit.rotation.y = 5 * Math.PI / 3;
-rabbit.scale.set(1.2, 1.2, 1.2)
+// rabbit.scale.set(1.2, 1.2, 1.2)
 scene.add(rabbit);
 /*////////////////////////////////////////*/
 
@@ -355,12 +354,12 @@ Tree.prototype = Object.assign(THREE.Object3D.prototype, {
 
 let trees = [];
 
-let rounds = [ {
-        x: 280,
-        z: 360,
-        count: 50,
-        size: 10
-    }]
+let rounds = [{
+    x: 280,
+    z: 360,
+    count: 50,
+    size: 10
+}]
 
 for (let k = 0; k < rounds.length; k++) {
     for (let i = 0; i < rounds[k].count; i++) {
@@ -471,10 +470,10 @@ function render() {
         fire.flicker(count);
     }
 
-
-    rabbit.idle();
+    rabbit.run(.1, 6);
 
     dragon.idle();
+    console.log(isActive,'isActive')
 
     if (!isActive) {
         lion.idle();

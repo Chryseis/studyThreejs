@@ -6,6 +6,7 @@ class Rabbit extends THREE.Group {
         super();
         this.maxSpeed = 48;
         this.idelingPos = {x: 0, y: 0, eLx: 0, eRx: 0};
+        this.runningCycle=0;
         this.createRabbit();
     }
 

@@ -7,7 +7,7 @@ class Lion extends THREE.Group {
     constructor() {
         super();
         this.idelingPos = {x: 0, y: 0};
-        ;
+        this.activePos={x: 0, y: 0}
         this.windTime = 0;
         this.isIdeling = false;
         this.acitve = false;
@@ -514,7 +514,7 @@ class Lion extends THREE.Group {
         let tx = -500 + Math.random() * 500;
         let ty = -100 + Math.random() * 500;
         let speed = 1 + Math.random() * 0.8;
-        TweenMax.to(this.idelingPos, speed, {
+        TweenMax.to(this.activePos, speed, {
             x: tx, y: ty, ease: Power4.easeInOut, onUpdate: () => {
                 this.cool(this.idelingPos.x, this.idelingPos.y);
             }, onComplete: () => {
