@@ -41,7 +41,7 @@ class Flame extends THREE.Group {
         light.shadow.camera.far = 120;
         light.shadow.bias = 0.9;
         light.shadow.radius = 13;
-        light.power = 20;
+        light.power = 50;
         return light;
     }
 

@@ -4,7 +4,7 @@ import {TweenMax, RoughEase, Power4} from "gsap"
 class Rabbit extends THREE.Group {
     constructor() {
         super();
-        this.maxSpeed = 48;
+        this.maxSpeed = 10;
         this.idelingPos = {x: 0, y: 0, eLx: 0, eRx: 0};
         this.runningCycle=0;
         this.createRabbit();

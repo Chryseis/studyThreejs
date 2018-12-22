@@ -3,9 +3,9 @@ const HALFPI = Math.PI / 2;
 const FireColors = [0xdb2902, 0xfb4402];
 const TextColors = [0xebe5e7, 0xe0dacd, 0xdbe6e6]
 const CamaraInit = {
-    x: 30,
-    y: 200,
-    z: 200
+    x: -30,
+    y: 160,
+    z: -262
 }
 
 const CamaraActive = {

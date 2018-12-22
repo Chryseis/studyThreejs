@@ -8,6 +8,7 @@ import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
 import Log from './components/Log'
 import Flame from './components/Flame'
+import Tree from './components/Tree'
 import {makeSprite} from './common/js/utils'
 import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from './common/js/constants'
 import {fboReady, wordsParticles} from './text'
@@ -38,39 +39,7 @@ window.addEventListener('resize', function () {
 }, false);
 
 document.body.onclick = function () {
-    if (fboReady) {
-        isActive = !isActive
-        // wordsParticles.hide(function () {
-        //     wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
-        // })
-        // orbit.saveState();
-        // TweenMax.to(orbit.object.position, 10, {
-        //     x: CamaraActive.x, y: CamaraActive.y, z: CamaraActive.z, ease: Power4.easeInOut, onUpdate: () => {
-        //         camera.position.z = orbit.object.position.z;
-        //         camera.position.y = orbit.object.position.y;
-        //         camera.position.x = orbit.object.position.x;
-        //     }, onComplete: () => {
-        //         isActive = true;
-        //         wordsParticles.hide();
-        //     }
-        // })
-        //
-        // TweenMax.to(orbit.object.position, 3, {
-        //     x: orbit.position0.x,
-        //     y: orbit.position0.y,
-        //     z: orbit.position0.z,
-        //     ease: Power4.easeInOut,
-        //     onUpdate: () => {
-        //         camera.position.z = orbit.object.position.z;
-        //         camera.position.y = orbit.object.position.y;
-        //         camera.position.x = orbit.object.position.x;
-        //     },
-        //     onComplete: () => {
-        //         isActive = false;
-        //         wordsParticles.updateText('WinWin GROUP,Happy', TextColors[Math.floor(Math.random() * TextColors.length)]);
-        //     }
-        // });
-    }
+    addRabbit();
 }
 
 document.body.appendChild(renderer.domElement);
@@ -106,40 +75,63 @@ camera.add(listener);
 let sound = new THREE.Audio(listener);
 
 // load a sound and set it as the Audio object's buffer
-// let audioLoader = new THREE.AudioLoader();
-// audioLoader.load('/bgMusic.ogg', function (buffer) {
-//     sound.setBuffer(buffer);
-//     sound.setLoop(true);
-//     sound.setVolume(0.1);
-//     sound.play();
-// });
+let audioLoader = new THREE.AudioLoader();
+audioLoader.load('/bgMusic.ogg', function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.1);
+    sound.play();
+});
 
 /*////////////////////////////////////////*/
 //Lion
-let lion = new Lion();
-lion.position.set(-50, 20, 50)
-lion.scale.set(.2, .2, .2)
-lion.rotation.y = 2.15 * Math.PI / 3;
-scene.add(lion);
+// let lion = new Lion();
+// lion.position.set(-50, 20, 50)
+// lion.scale.set(.2, .2, .2)
+// lion.rotation.y = 2.15 * Math.PI / 3;
+// scene.add(lion);
 /*////////////////////////////////////////*/
 
 
 /*////////////////////////////////////////*/
 //Rabbit
-let rabbit = new Rabbit();
-rabbit.position.set(60, -5, -20);
-rabbit.rotation.y = 5 * Math.PI / 3;
-// rabbit.scale.set(1.2, 1.2, 1.2)
-scene.add(rabbit);
+let rabbits = [];
+// let rabbit = new Rabbit();
+// let angular = 2 * Math.PI;
+// rabbit.position.set(50, -5, -230);
+// rabbit.rotation.y = angular;
+// rabbit.scale.set(.8, .8, .8)
+// rabbits.push(rabbit);
+// scene.add(rabbit);
+
+function addRabbit() {
+    let rabbit = new Rabbit();
+    let angular = 2 * Math.PI;
+    rabbit.position.set(50, -5, -230);
+    rabbit.rotation.y = angular;
+    rabbit.scale.set(.8, .8, .8);
+    rabbits.push(rabbit);
+    scene.add(rabbit);
+}
+
+function rabbitmove() {
+    rabbits.forEach((rabbit) => {
+        rabbit.run(.1, 3);
+        rabbit.position.x += Math.sin(rabbit.rotation.y) * .5;
+        rabbit.position.z += Math.cos(rabbit.rotation.y) * .5;
+    })
+
+}
+
 /*////////////////////////////////////////*/
 
 /*////////////////////////////////////////*/
 //Dragon
-let dragon = new Dragon();
-dragon.position.set(-40, 10, -75);
-dragon.scale.set(.35, .35, .35)
-dragon.rotation.y = 0.4 * Math.PI / 3;
-scene.add(dragon);
+// let dragon = new Dragon();
+// dragon.position.set(-40, 10, -75);
+// dragon.scale.set(.35, .35, .35)
+// dragon.rotation.y = 0.4 * Math.PI / 3;
+// scene.add(dragon);
 /*////////////////////////////////////////*/
 
 /*////////////////////////////////////////*/
@@ -296,60 +288,6 @@ function snowyGround() {
 
 scene.add(snowyGround());
 
-
-/*////////////////////////////////////////*/
-
-
-let treeMaterial = new THREE.MeshPhongMaterial({
-    color: 0x2C9E4B,
-    shininess: 20,
-    side: THREE.FrontSide,
-    flatShading: THREE.SmoothShading
-});
-
-function Cone(size, translate) {
-    size = size || 10;
-    this.geometry = new THREE.CylinderGeometry(size / 2, size, size, 6);
-    if (translate) {
-        this.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, size, 0));
-    }
-    THREE.Mesh.call(this, this.geometry, treeMaterial);
-}
-
-Cone.prototype = Object.assign(THREE.Mesh.prototype, {
-    constructor: Cone,
-});
-
-function Tree(size) {
-
-    size = size || 6 + Math.random();
-
-    THREE.Object3D.call(this);
-
-    let lastCone;
-    let cone;
-
-    for (let i = 0; i < size; i++) {
-        cone = new Cone((size - i) + 1, i);
-        cone.position.y = 0;
-        if (lastCone) {
-            let box = new THREE.Box3().setFromObject(lastCone);
-            cone.position.y = (box.max.y + box.min.y) / 2;
-        } else {
-            cone.position.y += 2;
-        }
-        lastCone = cone;
-        cone.castShadow = true;
-        cone.receiveShadow = true;
-        this.add(cone);
-    }
-
-};
-
-Tree.prototype = Object.assign(THREE.Object3D.prototype, {
-    constructor: Tree,
-});
-
 /*////////////////////////////////////////*/
 
 let trees = [];
@@ -364,6 +302,7 @@ let rounds = [{
 for (let k = 0; k < rounds.length; k++) {
     for (let i = 0; i < rounds[k].count; i++) {
         let tree = new Tree(rounds[k].size);
+        tree.makeTree();
         tree.scale.set(3.25, 3.25, 3.25);
         tree.position.x = Math.sin(i + Math.random() * 0.2) * rounds[k].x;//(treeCount/2 - i) * 30;
         tree.position.z = Math.cos(i + Math.random() * 0.1) * rounds[k].z;
@@ -455,7 +394,6 @@ renderer.gammaOutput = true;
 let count = 3;
 
 function render() {
-
     requestAnimationFrame(render);
     count += 0.03;
     orbit.update();
@@ -470,16 +408,16 @@ function render() {
         fire.flicker(count);
     }
 
-    rabbit.run(.1, 6);
+    rabbitmove();
 
-    dragon.idle();
-    console.log(isActive,'isActive')
-
-    if (!isActive) {
-        lion.idle();
-    } else {
-        lion.active();
-    }
+    // dragon.idle();
+    // console.log(isActive,'isActive')
+    //
+    // if (!isActive) {
+    //     lion.idle();
+    // } else {
+    //     lion.active();
+    // }
 
 
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
