@@ -17,7 +17,7 @@ import {fboReady, wordsParticles} from './text'
 let scene, camera, renderer, isActive = false;
 
 scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x242426, 20, 400);
+scene.fog = new THREE.Fog(0x242426, 30, 430);
 
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
 camera.position.set(CamaraInit.x, CamaraInit.y, CamaraInit.z)
@@ -76,12 +76,12 @@ let sound = new THREE.Audio(listener);
 
 // load a sound and set it as the Audio object's buffer
 let audioLoader = new THREE.AudioLoader();
-audioLoader.load('/bgMusic.ogg', function (buffer) {
-    sound.setBuffer(buffer);
-    sound.setLoop(true);
-    sound.setVolume(0.1);
-    sound.play();
-});
+// audioLoader.load('/bgMusic.ogg', function (buffer) {
+//     sound.setBuffer(buffer);
+//     sound.setLoop(true);
+//     sound.setVolume(0.1);
+//     sound.play();
+// });
 
 /*////////////////////////////////////////*/
 //Lion
@@ -96,29 +96,34 @@ audioLoader.load('/bgMusic.ogg', function (buffer) {
 /*////////////////////////////////////////*/
 //Rabbit
 let rabbits = [];
-// let rabbit = new Rabbit();
-// let angular = 2 * Math.PI;
-// rabbit.position.set(50, -5, -230);
-// rabbit.rotation.y = angular;
-// rabbit.scale.set(.8, .8, .8)
-// rabbits.push(rabbit);
-// scene.add(rabbit);
 
 function addRabbit() {
     let rabbit = new Rabbit();
-    let angular = 2 * Math.PI;
-    rabbit.position.set(50, -5, -230);
+    let positions = [100, -100, -200]
+    let angular = (2 + Math.random() * 0.05) * Math.PI;
+    let posX = 50 + Math.random() * positions[Math.floor(Math.random() * positions.length)];
+    if (posX < 0 && posX >= -60) {
+        posX = -70
+    } else if (posX >= 0 && posX <= 60) {
+        posX = 70
+    }
+
+    rabbit.position.set(posX, -5, -230);
     rabbit.rotation.y = angular;
     rabbit.scale.set(.8, .8, .8);
     rabbits.push(rabbit);
     scene.add(rabbit);
 }
 
-function rabbitmove() {
+function rabbitsMove() {
     rabbits.forEach((rabbit) => {
-        rabbit.run(.1, 3);
         rabbit.position.x += Math.sin(rabbit.rotation.y) * .5;
         rabbit.position.z += Math.cos(rabbit.rotation.y) * .5;
+        rabbit.run(.1, 2 + Math.random());
+        if (rabbit.position.z > 340) {
+            scene.remove(rabbit)
+            rabbits = rabbits.filter(o => o.uuid !== rabbit.uuid)
+        }
     })
 
 }
@@ -306,6 +311,7 @@ for (let k = 0; k < rounds.length; k++) {
         tree.scale.set(3.25, 3.25, 3.25);
         tree.position.x = Math.sin(i + Math.random() * 0.2) * rounds[k].x;//(treeCount/2 - i) * 30;
         tree.position.z = Math.cos(i + Math.random() * 0.1) * rounds[k].z;
+        console.log(tree.position.x, tree.position.z)
         trees.push(tree);
         scene.add(tree);
     }
@@ -397,7 +403,7 @@ function render() {
     requestAnimationFrame(render);
     count += 0.03;
     orbit.update();
-
+    // console.log(orbit.object.position)
     if (updateParticles) {
         updateParticles();
     }
@@ -408,7 +414,7 @@ function render() {
         fire.flicker(count);
     }
 
-    rabbitmove();
+    rabbitsMove();
 
     // dragon.idle();
     // console.log(isActive,'isActive')

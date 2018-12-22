@@ -1,12 +1,12 @@
 import * as THREE from 'three'
-import {TweenMax, RoughEase, Power4} from "gsap"
+import {TweenMax, RoughEase, Power4, Back, Power2} from "gsap"
 
 class Rabbit extends THREE.Group {
     constructor() {
         super();
         this.maxSpeed = 10;
         this.idelingPos = {x: 0, y: 0, eLx: 0, eRx: 0};
-        this.runningCycle=0;
+        this.runningCycle = 0;
         this.createRabbit();
     }
 
@@ -290,6 +290,32 @@ class Rabbit extends THREE.Group {
 
 
         this.pawBL.position.z = -Math.cos(Math.PI + t) * amp;
+    }
+
+    jump(speed) {
+        if (this.status == "jumping") return;
+        this.status = "jumping";
+        let totalSpeed = 10 / speed;
+        let jumpHeight = 45;
+
+        TweenMax.to(this.earL.rotation, totalSpeed, {x: "+=.3", ease: Back.easeOut});
+        TweenMax.to(this.earR.rotation, totalSpeed, {x: "-=.3", ease: Back.easeOut});
+
+        TweenMax.to(this.pawFL.rotation, totalSpeed, {x: "+=.7", ease: Back.easeOut});
+        TweenMax.to(this.pawFR.rotation, totalSpeed, {x: "-=.7", ease: Back.easeOut});
+        TweenMax.to(this.pawBL.rotation, totalSpeed, {x: "+=.7", ease: Back.easeOut});
+        TweenMax.to(this.pawBR.rotation, totalSpeed, {x: "-=.7", ease: Back.easeOut});
+
+        TweenMax.to(this.tail.rotation, totalSpeed, {x: "+=1", ease: Back.easeOut});
+
+        TweenMax.to(this.mouth.rotation, totalSpeed, {x: .5, ease: Back.easeOut});
+
+        TweenMax.to(this.position, totalSpeed / 10, {y: jumpHeight, ease: Power2.easeOut});
+        TweenMax.to(this.position, totalSpeed / 10, {
+            y: 0, ease: Power4.easeIn, delay: totalSpeed / 10, onComplete: () => {
+                this.status = "running";
+            }
+        });
     }
 }
 
