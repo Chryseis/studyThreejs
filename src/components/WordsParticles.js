@@ -33,7 +33,7 @@ class WordsParticles {
         try {
             WebFont.load({
                 custom: {
-                    families: ['Tangerine-Regular'],
+                    families: ['YesevaOne-Regular'],
                 },
                 loading: function () {
                 },
@@ -117,8 +117,8 @@ class WordsParticles {
                 animRatio: {type: "f", value: 0},
                 hideRatio: {type: "f", value: 2}
             },
-            vertexShader: ShaderLoader.get("simulation_vs"),
-            fragmentShader: ShaderLoader.get("simulation_fs"),
+            vertexShader: require('../assets/glsl/simulation_vs.glsl'),
+            fragmentShader: require('../assets/glsl/simulation_fs.glsl'),
             transparent: true,
             blending: THREE.AdditiveBlending,
             side: THREE.DoubleSide
@@ -132,8 +132,8 @@ class WordsParticles {
                 pointSize: {type: "f", value: 1},
                 animRatio: {type: "f", value: 0},
             },
-            vertexShader: ShaderLoader.get("render_vs"),
-            fragmentShader: ShaderLoader.get("render_fs"),
+            vertexShader: require('../assets/glsl/render_vs.glsl'),
+            fragmentShader: require('../assets/glsl/render_fs.glsl'),
             transparent: true,
             blending: THREE.AdditiveBlending,
             side: THREE.DoubleSide
@@ -144,7 +144,7 @@ class WordsParticles {
         this.particles = FBO.particles;
         this.particles.position.z = 0;
         this.particles.position.x = 0;
-        this.particles.position.y = -1000;
+        this.particles.position.y = -1500
 
         this.callback();
 
@@ -157,7 +157,7 @@ class WordsParticles {
         // this.simulationShader.uniforms.currentPosition.value = this.oldIndex;
         // this.simulationShader.uniforms.newPosition.value = this.index;
         this.ctx.clearRect(0, 0, this.particlesColumns, this.particlesColumns);
-        this.ctx.font = "240px 'Tangerine-Regular'";
+        this.ctx.font = "200px 'Tangerine-Regular'";
 
         let texts = text.split(',');
         let posY = 0;

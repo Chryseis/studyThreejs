@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import {TweenMax, RoughEase, Power2, Power4} from "gsap";
 import Lion from './components/Lion'
+import Bird from './components/Bird'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
 import Log from './components/Log'
@@ -19,7 +20,7 @@ let scene, camera, renderer, isActive = false;
 scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
 
-camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 400);
+camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 10, 5000);
 camera.position.set(CamaraInit.x, CamaraInit.y, CamaraInit.z)
 camera.updateProjectionMatrix();
 
@@ -38,9 +39,9 @@ window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 
-document.body.onclick = function () {
-    addRabbit();
-}
+// document.body.onclick = function () {
+//     addRabbit();
+// }
 
 document.body.appendChild(renderer.domElement);
 renderer.domElement.id = 'main'
@@ -53,8 +54,8 @@ const orbit = new OrbitControls(camera, renderer.domElement);
 // orbit.rotateSpeed = 0.3;
 // orbit.zoomSpeed = 0.3;
 //
-// orbit.autoRotate = true;
-// orbit.autoRotateSpeed = 0.6;
+orbit.autoRotate = true;
+orbit.autoRotateSpeed = 0.6;
 //
 // //orbit.minPolarAngle = Math.PI * 0.3;
 // orbit.maxPolarAngle = Math.PI * 0.5;
@@ -92,46 +93,31 @@ audioLoader.load('/bgMusic.ogg', function (buffer) {
 // scene.add(lion);
 /*////////////////////////////////////////*/
 
+let bird = new Bird();
+bird.position.set(-50, 20, 50)
+bird.scale.set(.2, .2, .2)
+bird.rotation.y = 2.15 * Math.PI / 3;
+scene.add(bird);
+
 
 /*////////////////////////////////////////*/
 //Rabbit
-let rabbits = [];
-// let rabbit = new Rabbit();
-// let angular = 2 * Math.PI;
-// rabbit.position.set(50, -5, -230);
-// rabbit.rotation.y = angular;
-// rabbit.scale.set(.8, .8, .8)
-// rabbits.push(rabbit);
-// scene.add(rabbit);
-
-function addRabbit() {
-    let rabbit = new Rabbit();
-    let angular = 2 * Math.PI;
-    rabbit.position.set(50, -5, -230);
-    rabbit.rotation.y = angular;
-    rabbit.scale.set(.8, .8, .8);
-    rabbits.push(rabbit);
-    scene.add(rabbit);
-}
-
-function rabbitmove() {
-    rabbits.forEach((rabbit) => {
-        rabbit.run(.1, 3);
-        rabbit.position.x += Math.sin(rabbit.rotation.y) * .5;
-        rabbit.position.z += Math.cos(rabbit.rotation.y) * .5;
-    })
-
-}
+let rabbit = new Rabbit();
+let angular = -Math.PI / 2;
+rabbit.position.set(50, -5, 0);
+rabbit.rotation.y = angular;
+rabbit.scale.set(.8, .8, .8)
+scene.add(rabbit);
 
 /*////////////////////////////////////////*/
 
 /*////////////////////////////////////////*/
 //Dragon
-// let dragon = new Dragon();
-// dragon.position.set(-40, 10, -75);
-// dragon.scale.set(.35, .35, .35)
-// dragon.rotation.y = 0.4 * Math.PI / 3;
-// scene.add(dragon);
+let dragon = new Dragon();
+dragon.position.set(-40, 10, -75);
+dragon.scale.set(.35, .35, .35)
+dragon.rotation.y = 0.4 * Math.PI / 3;
+scene.add(dragon);
 /*////////////////////////////////////////*/
 
 /*////////////////////////////////////////*/
@@ -408,17 +394,13 @@ function render() {
         fire.flicker(count);
     }
 
-    rabbitmove();
+    //rabbitmove();
 
-    // dragon.idle();
-    // console.log(isActive,'isActive')
-    //
-    // if (!isActive) {
-    //     lion.idle();
-    // } else {
-    //     lion.active();
-    // }
+    rabbit.idle();
 
+    dragon.idle();
+
+    bird.idle();
 
     renderer.toneMappingExposure = Math.pow(0.91, 5.0);
 

@@ -4,8 +4,8 @@ import WordsParticles from './components/WordsParticles'
 
 let fboReady = false;
 let sceneText = new THREE.Scene();
-let cameraText = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 6500)
-cameraText.position.z = 6500;
+let cameraText = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000)
+cameraText.position.z = 4500;
 cameraText.position.y = 0;
 cameraText.position.x = 0;
 
@@ -52,7 +52,7 @@ let wordsParticles = new WordsParticles(rendererText);
 wordsParticles.init(() => {
     sceneText.add(wordsParticles.particles);
     fboReady = true;
-    wordsParticles.updateText('WelCome to,WinWin Group', 0xb297a2);
+    wordsParticles.updateText('Chrys', 0xb297a2);
 });
 
 function render() {

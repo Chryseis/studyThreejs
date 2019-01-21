@@ -214,7 +214,7 @@ class Rabbit extends THREE.Group {
         let tEarLx = -Math.PI / 6 + Math.random() * Math.PI / 3;
         let tEarRx = -Math.PI / 6 + Math.random() * Math.PI / 3;
 
-        let speed = .5 + Math.random() * .5;
+        let speed = .3 + Math.random() * .5;
         TweenMax.to(this.idelingPos, speed, {
             x: tx, y: ty, eRx: tEarLx, eLx: tEarRx, ease: Power4.easeInOut, onUpdate: () => {
                 this.look(this.idelingPos.x, this.idelingPos.y, this.idelingPos.eLx, this.idelingPos.eRx);
