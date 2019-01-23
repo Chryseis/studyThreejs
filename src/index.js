@@ -11,7 +11,7 @@ import Flame from './components/Flame'
 import Tree from './components/Tree'
 import {makeSprite} from './common/js/utils'
 import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from './common/js/constants'
-import {fboReady, wordsParticles} from './text'
+//import {fboReady, wordsParticles} from './text'
 
 
 let scene, camera, renderer, isActive = false;
