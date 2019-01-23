@@ -2,7 +2,7 @@ import './common/css/reset.css'
 import './common/css/common.less'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import {TweenMax, RoughEase, Power2, Power4} from "gsap";
+import {TweenMax, RoughEase, Power2, Power4,SplitText} from "gsap";
 import Lion from './components/Lion'
 import Bird from './components/Bird'
 import Rabbit from './components/Rabbit'
@@ -12,7 +12,7 @@ import Flame from './components/Flame'
 import Tree from './components/Tree'
 import {makeSprite} from './common/js/utils'
 import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from './common/js/constants'
-import {fboReady, wordsParticles} from './text'
+//import {fboReady, wordsParticles} from './text'
 
 
 let scene, camera, renderer, isActive = false;
@@ -48,8 +48,8 @@ renderer.domElement.id = 'main'
 
 /*////////////////////////////////////////*/
 const orbit = new OrbitControls(camera, renderer.domElement);
-// orbit.enableZoom = true;
-// orbit.enablePan = false;
+orbit.enableZoom = false;
+orbit.enablePan = false;
 //
 // orbit.rotateSpeed = 0.3;
 // orbit.zoomSpeed = 0.3;
