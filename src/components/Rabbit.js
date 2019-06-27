@@ -11,42 +11,77 @@ class Rabbit extends THREE.Group {
     }
 
     createRabbit() {
+        const fontLoader = new THREE.FontLoader();
         let blackMat = new THREE.MeshPhongMaterial({
             color: 0x100707,
-            shading: THREE.FlatShading
+            flatShading:true
         });
 
         let brownMat = new THREE.MeshPhongMaterial({
             color: 0xb44b39,
             shininess: 0,
-            shading: THREE.FlatShading
+            flatShading:true
         });
 
         let greenMat = new THREE.MeshPhongMaterial({
             color: 0x7abf8e,
             shininess: 0,
-            shading: THREE.FlatShading
+            flatShading:true
         });
 
         let pinkMat = new THREE.MeshPhongMaterial({
             color: 0xdc5f45, //0xb43b29,//0xff5b49,
             shininess: 0,
-            shading: THREE.FlatShading
+            flatShading:true
         });
 
         let lightBrownMat = new THREE.MeshPhongMaterial({
             color: 0xe07a57,
-            shading: THREE.FlatShading
+            flatShading:true
         });
 
         let whiteMat = new THREE.MeshPhongMaterial({
             color: 0xa49789,
-            shading: THREE.FlatShading
+            flatShading:true
         });
         let skinMat = new THREE.MeshPhongMaterial({
             color: 0xff9ea5,
-            shading: THREE.FlatShading
+            flatShading:true
         });
+
+        fontLoader.load('/static/file/json/Microsoft YaHei_Regular.json', (font) => {
+            let textGeo = new THREE.TextGeometry('allen', {
+                font: font,
+                size: 2,
+                height: 0.1,
+                curveSegments: 1,
+                bevelThickness: 0.1,
+                bevelSize: 0.1,
+                bevelEnabled: false,
+                bevelSegments: 0
+            });
+
+            let materials = [
+                new THREE.MeshPhongMaterial({color: 0xffffff, flatShading: true}), // front
+                new THREE.MeshPhongMaterial({color: 0xffffff}) // side
+            ];
+
+            textGeo.verticesNeedUpdate = true;
+            textGeo.elementsNeedUpdate = true;
+            textGeo.normalsNeedUpdate = true;
+            textGeo.uvsNeedUpdate = true;
+            textGeo.groupsNeedUpdate = true;
+            textGeo.computeBoundingBox();
+
+            let tx = -(textGeo.boundingBox.max.x - textGeo.boundingBox.min.x) / 2
+
+            let textMesh = new THREE.Mesh(textGeo, materials);
+
+            textMesh.rotation.y = 0;
+            textMesh.position.set(-tx, 10, 2);
+
+            this.add(textMesh)
+        })
 
         this.body = new THREE.Group();
         this.add(this.body);
@@ -189,6 +224,8 @@ class Rabbit extends THREE.Group {
 
         this.eyeR.position.x = -this.eyeL.position.x;
         this.head.add(this.eyeR);
+
+
     }
 
     look(xTarget, yTarget, xEarLTarget, xEarRTarget) {

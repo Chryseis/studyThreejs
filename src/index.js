@@ -1,9 +1,10 @@
 import './common/css/reset.css'
 import './common/css/common.less'
+import './common/css/iconfont.css'
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
-import {TweenMax, RoughEase, Power2, Power4} from "gsap";
-import Lion from './components/Lion'
+import {TweenMax, RoughEase, Power2, Power4, TimelineLite, TweenLite} from "gsap";
+import Bird from './components/Bird'
 import Rabbit from './components/Rabbit'
 import Dragon from './components/Dragon'
 import Log from './components/Log'
@@ -11,10 +12,10 @@ import Flame from './components/Flame'
 import Tree from './components/Tree'
 import {makeSprite} from './common/js/utils'
 import {TWOPI, HALFPI, FireColors, TextColors, CamaraInit, CamaraActive} from './common/js/constants'
-//import {fboReady, wordsParticles} from './text'
+import './components/splitText'
 
 
-let scene, camera, renderer, isActive = false;
+let scene, camera, renderer, isActive = false, sound;
 
 scene = new THREE.Scene();
 scene.fog = new THREE.Fog(0x242426, 20, 400);
@@ -38,10 +39,6 @@ window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 
-// document.body.onclick = function () {
-//     addRabbit();
-// }
-
 document.body.appendChild(renderer.domElement);
 renderer.domElement.id = 'main'
 
@@ -49,51 +46,26 @@ renderer.domElement.id = 'main'
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enableZoom = false;
 orbit.enablePan = false;
-//
-// orbit.rotateSpeed = 0.3;
-// orbit.zoomSpeed = 0.3;
-//
 orbit.autoRotate = true;
 orbit.autoRotateSpeed = 0.6;
-//
-// //orbit.minPolarAngle = Math.PI * 0.3;
-// orbit.maxPolarAngle = Math.PI * 0.5;
-//
-// //orbit.minAzimuthAngle = -Math.PI * 0.2; // radians
-// //orbit.maxAzimuthAngle = Math.PI * 0.2; // radians
-//
-// orbit.minDistance = 40;
-// orbit.maxDistance = 500;
-//
-// orbit.target.set(0, 0, 0);
 orbit.update();
 
 let listener = new THREE.AudioListener();
 camera.add(listener);
 
 // create a global audio source
-let sound = new THREE.Audio(listener);
+sound = new THREE.Audio(listener);
 
 // load a sound and set it as the Audio object's buffer
 let audioLoader = new THREE.AudioLoader();
-audioLoader.load('/bgMusic.ogg', function (buffer) {
+audioLoader.load(require('./assets/audio/bgMusic.ogg'), function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.1);
-    sound.play();
+    sound.setVolume(0.5);
 });
 
-/*////////////////////////////////////////*/
-//Lion
-// let lion = new Lion();
-// lion.position.set(-50, 20, 50)
-// lion.scale.set(.2, .2, .2)
-// lion.rotation.y = 2.15 * Math.PI / 3;
-// scene.add(lion);
-/*////////////////////////////////////////*/
-
 let bird = new Bird();
-bird.position.set(-50, 20, 50)
+bird.position.set(-50, 5, 50)
 bird.scale.set(.2, .2, .2)
 bird.rotation.y = 2.15 * Math.PI / 3;
 scene.add(bird);
@@ -368,6 +340,7 @@ function pointsParticles() {
     }
 }
 
+
 let updateParticles;
 updateParticles = pointsParticles();
 
@@ -409,3 +382,15 @@ function render() {
 
 render();
 
+//页面控制
+$(function () {
+    $(document).on('click', '.icon-play', function () {
+        $(this).removeClass('icon-play').addClass('icon-pause');
+        sound.play();
+    });
+
+    $(document).on('click', '.icon-pause', function () {
+        $(this).removeClass('icon-pause').addClass('icon-play');
+        sound.pause();
+    });
+})

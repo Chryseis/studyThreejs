@@ -38,9 +38,9 @@ class Flame extends THREE.Group {
         light.shadow.mapSize.width = 512;
         light.shadow.mapSize.height = 512;
         light.shadow.camera.near = 0.1;
-        light.shadow.camera.far = 120;
-        light.shadow.bias = 0.9;
-        light.shadow.radius = 13;
+        light.shadow.camera.far = 500;
+        // light.shadow.bias = 0.9;
+        // light.shadow.radius = 100;
         light.power = 50;
         return light;
     }

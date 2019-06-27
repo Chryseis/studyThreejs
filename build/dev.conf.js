@@ -1,6 +1,7 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const baseConf = require('./base.conf')
 
@@ -18,6 +19,16 @@ module.exports = merge(baseConf, {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery'
+        }),
+        new CopyWebpackPlugin([{
+            context: __dirname,
+            from: '../src/assets/fonts/json/',
+            to: 'static/file/json'
+        }]),
         new HtmlWebpackPlugin({
             title: 'Game',
             filename: 'index.html',

@@ -37,6 +37,16 @@ module.exports = {
                 }]
             },
             {
+                test: /\.(ogg)(\?.*)?$/,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 10000,
+                        name: 'static/media/[name][hash:7].[ext]'
+                    }
+                }]
+            },
+            {
                 test: /\.glsl$/,
                 loader: 'webpack-glsl-loader'
             }

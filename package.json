@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node build/server"
+    "start": "node build/server",
+    "build": "webpack --config build/prod"
   },
   "keywords": [
     "three.js"
@@ -29,15 +30,21 @@
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.26.1",
+    "webpack-cli": "^3.2.1",
     "webpack-dev-middleware": "^3.4.0",
     "webpack-glsl-loader": "^1.0.1",
     "webpack-hot-middleware": "^2.24.3",
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
+    "animate.css": "^3.7.0",
+    "copy-webpack-plugin": "^4.6.0",
     "express": "^4.16.4",
     "gsap": "^2.0.2",
-    "three": "^0.86.0",
+    "jquery": "^3.3.1",
+    "letteringjs": "^0.7.0",
+    "textillate": "^0.4.1",
+    "three": "^0.99.0",
     "three-orbitcontrols": "^2.99.1",
     "webfontloader": "^1.6.28"
   },

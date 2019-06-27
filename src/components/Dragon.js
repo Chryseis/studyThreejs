@@ -28,40 +28,40 @@ class Dragon extends THREE.Group {
         // Materials
         let greenMat = new THREE.MeshPhongMaterial({
             color: 0x5da683,
-            shading: THREE.FlatShading
+            flatShading: true
         });
         let lightGreenMat = new THREE.MeshPhongMaterial({
             color: 0x95c088,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         let yellowMat = new THREE.MeshPhongMaterial({
             color: 0xfdde8c,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         let redMat = new THREE.MeshPhongMaterial({
             color: 0xcb3e4c,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         let whiteMat = new THREE.MeshPhongMaterial({
             color: 0xfaf3d7,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         let brownMat = new THREE.MeshPhongMaterial({
             color: 0x874a5c,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         let blackMat = new THREE.MeshPhongMaterial({
             color: 0x403133,
-            shading: THREE.FlatShading
+            flatShading: true
         });
         let pinkMat = new THREE.MeshPhongMaterial({
             color: 0xd0838e,
-            shading: THREE.FlatShading
+            flatShading: true
         });
 
         // body
@@ -74,6 +74,7 @@ class Dragon extends THREE.Group {
         this.wingR = this.wingL.clone();
         this.wingR.position.x = -this.wingL.position.x;
         this.wingR.rotation.z = -this.wingL.rotation.z;
+        this.wingR.castShadow = true;
 
         // pike body
         let pikeBodyGeom = new THREE.CylinderGeometry(0, 10, 10, 4, 1);
@@ -81,16 +82,19 @@ class Dragon extends THREE.Group {
         this.pikeBody1.scale.set(.2, 1, 1);
         this.pikeBody1.position.z = 10;
         this.pikeBody1.position.y = 26;
+        this.pikeBody1.castShadow = true;
 
         this.pikeBody2 = this.pikeBody1.clone();
         this.pikeBody2.position.z = 0;
         this.pikeBody3 = this.pikeBody1.clone();
         this.pikeBody3.position.z = -10;
+        this.pikeBody1.castShadow = true;
 
         // tail
         this.tail = new THREE.Group();
         this.tail.position.z = -20;
         this.tail.position.y = 10;
+        this.tail.castShadow = true;
 
         let tailMat = new THREE.LineBasicMaterial({
             color: 0x5da683,
@@ -109,6 +113,7 @@ class Dragon extends THREE.Group {
         this.tailPike.scale.set(.2, 1, 1);
         this.tailPike.position.z = -35;
         this.tailPike.position.y = 0;
+        this.tailPike.castShadow = true;
 
         this.tail.add(this.tailLine);
         this.tail.add(this.tailPike);
@@ -120,12 +125,15 @@ class Dragon extends THREE.Group {
         this.body.add(this.pikeBody1);
         this.body.add(this.pikeBody2);
         this.body.add(this.pikeBody3);
+        this.body.castShadow = true;
 
         // head
         this.head = new THREE.Group();
+        this.head.castShadow = true;
 
         // head face
         this.face = this.makeCube(greenMat, 60, 50, 80, 0, 25, 40, 0, 0, 0);
+        this.face.castShadow = true;
 
         // head horn
         let hornGeom = new THREE.CylinderGeometry(0, 6, 10, 4, 1);
@@ -136,17 +144,20 @@ class Dragon extends THREE.Group {
 
         this.hornR = this.hornL.clone();
         this.hornR.position.x = -10;
+        this.hornR.castShadow = true;
 
         // head ears
         this.earL = this.makeCube(greenMat, 5, 10, 20, 32, 42, 2, 0, 0, 0);
         this.earL.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 5, -10));
         this.earL.geometry.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 4));
         this.earL.geometry.applyMatrix(new THREE.Matrix4().makeRotationY(-Math.PI / 4));
+        this.earL.castShadow = true;
 
         this.earR = this.makeCube(greenMat, 5, 10, 20, -32, 42, 2, 0, 0, 0);
         this.earR.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 5, -10));
         this.earR.geometry.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 4));
         this.earR.geometry.applyMatrix(new THREE.Matrix4().makeRotationY(Math.PI / 4));
+        this.earR.castShadow = true;
 
         // head mouth
         this.mouth = new THREE.Group();
@@ -288,18 +299,18 @@ class Dragon extends THREE.Group {
         this.head.lookAt(v);
     }
 
-    idle(){
+    idle() {
         TweenMax.killTweensOf(this.head.rotation);
 
         this.update();
-        if (this.isIdeling || Math.random()<.98) return;
+        if (this.isIdeling || Math.random() < .98) return;
         this.isIdeling = true;
         let tx = -200 + Math.random() * 800;
-        let ty =  Math.random() * 400;
+        let ty = Math.random() * 400;
         let tz = 500;
-        let speed = .5 + Math.random()*2;
+        let speed = .5 + Math.random() * 2;
         TweenMax.to(this.idelingPos, speed, {
-            x: tx, y: ty, z:tz, ease: Power4.easeOut, onUpdate: () => {
+            x: tx, y: ty, z: tz, ease: Power4.easeOut, onUpdate: () => {
                 this.lookAt(this.idelingPos);
             }, onComplete: () => {
                 this.isIdeling = false;

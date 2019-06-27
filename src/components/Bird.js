@@ -31,22 +31,22 @@ class BirdCharacter extends THREE.Group {
         this.yellowMat = new THREE.MeshPhongMaterial({
             color: 0xffde79,
             shininess: 0,
-            //shading: THREE.FlatShading
+            flatShading: true
         });
         this.whiteMat = new THREE.MeshPhongMaterial({
             color: 0xffffff,
             shininess: 0,
-            // shading: THREE.FlatShading
+            flatShading: true
         });
         this.blackMat = new THREE.MeshPhongMaterial({
             color: 0x000000,
             shininess: 0,
-            // shading: THREE.FlatShading
+            flatShading: true
         });
         this.orangeMat = new THREE.MeshPhongMaterial({
             color: 0xff5535,
             shininess: 0,
-            // shading: THREE.FlatShading
+            flatShading: true
         });
 
         //WINGS
@@ -73,6 +73,7 @@ class BirdCharacter extends THREE.Group {
         let bodyGeom = new THREE.CylinderGeometry(40, 70, 200, this.rSegments, this.hSegments);
         this.bodyBird = new THREE.Mesh(bodyGeom, this.yellowMat);
         this.bodyBird.position.y = 70;
+        this.bodyBird.castShadow=true;
 
         this.bodyVerticesLength = (this.rSegments + 1) * this.hSegments;
         for (let i = 0; i < this.bodyVerticesLength; i++) {
@@ -94,24 +95,28 @@ class BirdCharacter extends THREE.Group {
         this.leftEye.position.x = -30;
         this.leftEye.position.y = 120;
         this.leftEye.position.z = 35;
+        this.leftEye.castShadow = true;
         this.leftEye.rotation.y = -Math.PI / 4;
 
         this.leftIris = new THREE.Mesh(irisGeom, this.blackMat);
         this.leftIris.position.x = -30;
         this.leftIris.position.y = 120;
         this.leftIris.position.z = 40;
+        this.leftIris.castShadow = true;
         this.leftIris.rotation.y = -Math.PI / 4;
 
         this.rightEye = new THREE.Mesh(eyeGeom, this.whiteMat);
         this.rightEye.position.x = 30;
         this.rightEye.position.y = 120;
         this.rightEye.position.z = 35;
+        this.rightEye.castShadow = true;
         this.rightEye.rotation.y = Math.PI / 4;
 
         this.rightIris = new THREE.Mesh(irisGeom, this.blackMat);
         this.rightIris.position.x = 30;
         this.rightIris.position.y = 120;
         this.rightIris.position.z = 40;
+        this.rightIris.castShadow = true;
         this.rightIris.rotation.y = Math.PI / 4;
 
         // BEAK
@@ -120,12 +125,14 @@ class BirdCharacter extends THREE.Group {
         this.beak = new THREE.Mesh(beakGeom, this.orangeMat);
         this.beak.position.z = 65;
         this.beak.position.y = 70;
+        this.beak.castShadow = true;
         this.beak.rotation.x = Math.PI / 2;
 
         this.face.add(this.rightEye);
         this.face.add(this.rightIris);
         this.face.add(this.leftEye);
         this.face.add(this.leftIris);
+        this.face.castShadow=true;
         this.face.add(this.beak);
 
         //FEATHERS
@@ -135,6 +142,7 @@ class BirdCharacter extends THREE.Group {
         this.feather1.position.z = 55;
         this.feather1.position.y = 185;
         this.feather1.rotation.x = Math.PI / 4;
+        this.feather1.castShadow=true;
         this.feather1.scale.set(1.5, 1.5, 1);
 
         this.feather2 = new THREE.Mesh(featherGeom, this.yellowMat);
@@ -143,6 +151,7 @@ class BirdCharacter extends THREE.Group {
         this.feather2.position.x = 20;
         this.feather2.rotation.x = Math.PI / 4;
         this.feather2.rotation.z = -Math.PI / 8;
+        this.feather2.castShadow=true;
 
         this.feather3 = new THREE.Mesh(featherGeom, this.yellowMat);
         this.feather3.position.z = 50;
@@ -150,6 +159,7 @@ class BirdCharacter extends THREE.Group {
         this.feather3.position.x = -20;
         this.feather3.rotation.x = Math.PI / 4;
         this.feather3.rotation.z = Math.PI / 8;
+        this.feather3.castShadow=true;
 
         this.face.add(this.feather1);
         this.face.add(this.feather2);
