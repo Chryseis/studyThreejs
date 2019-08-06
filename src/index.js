@@ -1,6 +1,9 @@
 import './common/css/reset.css'
 import './common/css/common.less'
 import './common/css/iconfont.css'
+import 'animate.css';
+import 'letteringjs';
+import 'textillate';
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import {TweenMax, RoughEase, Power2, Power4, TimelineLite, TweenLite} from "gsap"

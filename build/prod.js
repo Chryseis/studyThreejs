@@ -12,7 +12,7 @@ module.exports = merge(baseConf, {
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        publicPath: 'assets/',
+        publicPath: 'http://static.chryseis.cn/',
         filename: 'js/[name].js',
         chunkFilename: 'js/[name].js',
         sourceMapFilename: '[file].map'
