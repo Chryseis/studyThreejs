@@ -42,7 +42,7 @@ window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight)
 }, false)
 
-document.body.appendChild(renderer.domElement)
+document.querySelector('.page-content').appendChild(renderer.domElement)
 renderer.domElement.id = 'main'
 
 /*////////////////////////////////////////*/
