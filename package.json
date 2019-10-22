@@ -41,7 +41,7 @@
     "copy-webpack-plugin": "^4.6.0",
     "express": "^4.16.4",
     "gsap": "^2.0.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "letteringjs": "^0.7.0",
     "textillate": "^0.4.1",
     "three": "^0.109.0",
