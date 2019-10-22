@@ -233,7 +233,7 @@ function snowyGround() {
     let material = new THREE.MeshPhongMaterial({
         color: 0xFFFFFF,
         shininess: 60,
-        bumpMap: noise,
+        // bumpMap: noise,
         bumpScale: 0.025,
     })
 
