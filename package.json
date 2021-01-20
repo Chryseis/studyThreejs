@@ -40,7 +40,7 @@
     "animate.css": "^3.7.0",
     "copy-webpack-plugin": "^4.6.0",
     "express": "^4.16.4",
-    "gsap": "^2.0.2",
+    "gsap": "^3.6.0",
     "jquery": "^3.3.1",
     "letteringjs": "^0.7.0",
     "textillate": "^0.4.1",
