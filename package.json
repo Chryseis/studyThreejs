@@ -44,7 +44,7 @@
     "jquery": "^3.3.1",
     "letteringjs": "^0.7.0",
     "textillate": "^0.4.1",
-    "three": "^0.109.0",
+    "three": "^0.125.0",
     "three-orbitcontrols": "^2.99.1",
     "webfontloader": "^1.6.28"
   },
